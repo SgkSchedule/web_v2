@@ -33,7 +33,7 @@
                                  <option v-for="(index, type) in this.data.groups" :value="index.id">{{index.name}}</option>
                              </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
-                        <button type="button" @click="submitefunc()">Показать</button>
+                        <button type="button" @click="load()">Показать</button>
                     </form>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                             <option v-for="(index, type) in this.data.teachers" :value="index.id">{{index.name}}</option>
                         </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
-                        <button type="button" @click="submitefunc(true)">Показать</button>
+                        <button type="button" @click="load()">Показать</button>
                     </form>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                             <option v-for="(index, type) in this.data.buildings" :value="index.id">{{index.name}}</option>
                         </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
-                        <button type="button" @click="submitefunc(true)">Показать</button>
+                        <button type="button" @click="load()">Показать</button>
                     </form>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                             <option v-for="(index, type) in this.data.cabinets" :value="index.id">{{index.name}}</option>
                         </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
-                        <button type="button" @click="submitefunc(true)">Показать</button>
+                        <button type="button" @click="load()">Показать</button>
                     </form>
                 </div>
             </div>

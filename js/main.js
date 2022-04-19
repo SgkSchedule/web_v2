@@ -71,29 +71,38 @@ const Rasp = {
             this.activeTab = tab;
         },
 
-        submitefunc(teacher = false) {
+        load() {
 			var requestOptions = {
-				method: 'GET',
-				redirect: 'follow'
+				method: 'GET'
 			};
-			
-			if(teacher){
-				fetch("https://asu.samgk.ru/api/schedule/teacher/"+this.selected.date+"/"+this.selected.teacher , requestOptions)
-				.then(response => response.json())
-				.then(result => this.rasp = result.lessons)
-				.catch(error => console.log('error', error));
-				
-				console.log(this.rasp);
-			} else {
-				fetch("https://asu.samgk.ru/api/schedule/"+this.selected.group+"/"+this.selected.date , requestOptions)
-				.then(response => response.json())
-				.then(result => this.rasp = result.lessons)
-				.catch(error => console.log('error', error));
+
+			switch (this.activeTab) {
+				case 'group': {
+					fetch(`https://asu.samgk.ru/api/schedule/${this.selected.group}/${this.selected.date}`, requestOptions)
+						.then(response => response.json())
+						.then(result => this.rasp = result.lessons)
+						.catch(error => console.log('error', error));
+
+					console.log(this.rasp);
+					break;
+				}
+				case 'user': {
+					fetch(`https://asu.samgk.ru/api/schedule/teacher/${this.selected.date}/${this.selected.teacher}`, requestOptions)
+						.then(response => response.json())
+						.then(result => this.rasp = result.lessons)
+						.catch(error => console.log('error', error));
+
+					console.log(this.rasp);
+					break;
+				}
+				case 'building': {
+					break;
+				}
+				case 'cabinet': {
+					break;
+				}
 			}
-			
-			
-				
-            this.submite = true;
+			this.submite = true;
         } 
     },
 	created() {
@@ -112,9 +121,8 @@ const Rasp = {
 			.catch(error => console.log('error', error));
 		fetch("https://asu.samgk.ru/api/teachers", requestOptions)
 			.then(response => response.json())
-			.then(result => this.data.teachers = result) 
+			.then(result => this.data.teachers = result)
 			.catch(error => console.log('error', error));
-		
 	}
 
   }
