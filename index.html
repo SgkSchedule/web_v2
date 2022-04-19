@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СГК Расписание</title>
+    <link rel="icon" href="https://samgk.ru/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.24/vue.global.prod.min.js" 
+        integrity="sha512-KX1eBv1gnv7xoRgc8b2TQRn9sNyelFFInbx/ZuXnuZd53YoUcGLsavkKcEAeeJSSocwMFUpi7A+l2nhKRslt6w==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/alerts.css">
+</head>
+<body>
+    <h3 class="text-align-center title">
+        Расписание занятий
+    </h3>
+    <div class="container-rasp" id="raspapp" data-v-app="">
+        <section id="rasp">
+            <div class="tabs">
+                <a href="#" class="tab tab-group" v-bind:class="{active: isTab('group')}" @click="setTab('group')">По учебной группе</a>
+                <a href="#" class="tab tab-user" @click="setTab('user')" v-bind:class="{active: isTab('user')}">По преподавателю</a>
+                <a href="#" class="tab tab-all" @click="setTab('all')" v-bind:class="{active: isTab('all')}">Общее</a>
+            </div> 
+ 
+            <div class="tap-group-wrap" v-if="isTab('group')">
+                <div class="row-select">
+                    <form action="#">
+                        <select name="test" v-model="selected.group">
+                                 <option value="">Не выбрано</option>
+                                 <option v-for="(index, type) in this.selected.groups" :value="index.id">{{index.name}}</option>
+                             </select>
+                        <input type="date" name="date" v-model="selected.date" id="date">
+                        <button type="button" @click="submitefunc()">Показать</button>
+                    </form>
+ 
+ 
+                </div>
+            </div>
+            <div class="tap-user-wrap" v-if="isTab('user')">
+                <div class="row-select">
+                    <form action="#">
+                        <select name="user" id="user" v-model="selected.teacher">
+                            <option value="">Не выбрано</option>
+                             <option v-for="(index, type) in this.selected.teachers" :value="index.id">{{index.name}}</option>
+                        </select>
+                        <input type="date" name="date" v-model="selected.date" id="date">
+                        <button type="button" @click="submitefunc(true)">Показать</button>
+                    </form>
+ 
+ 
+                </div>
+            </div>
+ 
+            <div class="tap-user-wrap" v-if="isTab('all')">
+                <div class="row-select">
+                    <form action="#">
+                        <input type="date" name="date" id="date">
+                        <button type="submit">Показать</button>
+                    </form>
+ 
+ 
+                </div>
+            </div>
+ 
+            <div class="result">
+                <div v-if="rasp.length > 0 " class="line-groups">
+                    <div v-for="(index, type) in this.rasp" class="line-group">
+                        <div class="group-item number">
+                            <span class="number-rasp">
+                                {{index.num}}
+                            </span>
+                        </div>
+                        <div class="group-item time">
+                            <span class="time-rasp" v-html="callings[index.num]">
+ 
+                            </span>
+                        </div>
+                         <div v-if="index.nameGroup != '' &amp;&amp; index.nameGroup != undefined &amp;&amp; index.nameGroup != null" class="group-item time">
+                                 <span class="time-rasp" v-html="index.nameGroup">
+ 
+                                 </span>
+                             </div>
+                        <div class="group-item activity">
+                            <div class="activity-rasp">
+                                <b>
+                                    {{index.title}} 
+                                </b>
+                                <br>
+                                <div>
+                                    {{index.teachername}} 
+                                </div>
+                                 <div v-if="index.resource != ''">
+                                     <hr>
+                                     <div v-html="index.resource"></div>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="group-item type-of-activity">
+                            <div class="type-of-activity-rasp">
+                                <div>
+                                    {{index.cab}} 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div v-if="this.rasp.length == 0" class="alert__container">
+                     <div v-if="submite">
+                         
+                         <div class="alert alert__success spacer" role="alert">
+                             <p class="alert__text">Пар нет</p>
+                         </div>
+                     </div>
+                     <div v-if="!submite">
+                         <div class="alert alert__primary spacer" role="alert">
+                             <p class="alert__text">Вы ещё ничего не выбрали</p>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </section>
+    </div>
+</body>
+<script>
+    const Rasp = {
+    data() {
+      return {
+        tabs: ['group', 'user', 'all'],
+        activeTab: ['group'],
+		rasp: [],
+		submite: false, 
+		callings:{
+			1: ' 08:25 <br> 10:00',
+			2: ' 10:10 <br> 11:45',
+			3: ' 12:15 <br> 13:50',
+			4: ' 14:00 <br> 15:35',
+			5: ' 15:45 <br> 17:20',
+			6: ' 17:30 <br> 19:05',
+			7: ' 19:15 <br> 20:50',
+			'1.1': ' 08:25 <br> 09:10',
+			'1.2': ' 09:15 <br> 10:00',
+			'2.1': ' 10:10 <br> 10:55',
+			'2.2': ' 11:00 <br> 11:45',
+			'3.1': '12:15 <br> 13:00',
+			'3.2': '13:05 <br> 13:50',
+			'4.1': '14:00 <br> 14:45',
+			'4.2': '14:50 <br> 15:35',
+			'5.1': '15:45 <br> 16:30',
+			'5.2': '16:35 <br> 17:20',
+			'6.1': '17:30 <br> 18:15',
+			'6.2': '18:20 <br> 19:05',
+			'7.1': '19:15 <br> 20:00',
+			'7.2': '20:05 <br> 20:50',
+		},
+        selected: {
+			groups: {},
+			teachers: {},
+			teacher: '',
+            group: '',
+            user: null,
+            date: new Date().toISOString().split('T')[0]
+        }
+      }
+    }, 
+    methods: {
+        getTab() {
+            return this.activeTab[this.activeTab.length - 1];
+        },
+
+        isTab(tab) {
+            return tab == this.getTab()
+        },
+
+        setTab(tab) {
+            this.activeTab.push(tab)
+        } ,
+
+        submitefunc(teacher = false) {
+			var requestOptions = {
+				method: 'GET',
+				redirect: 'follow'
+			};
+			
+			if(teacher){
+				fetch("https://asu.samgk.ru/api/schedule/teacher/"+this.selected.date+"/"+this.selected.teacher , requestOptions)
+				.then(response => response.json())
+				.then(result => this.rasp = result.lessons)
+				.catch(error => console.log('error', error));
+				
+				console.log(this.rasp);
+			} else {
+				fetch("https://asu.samgk.ru/api/schedule/"+this.selected.group+"/"+this.selected.date , requestOptions)
+				.then(response => response.json())
+				.then(result => this.rasp = result.lessons)
+				.catch(error => console.log('error', error));
+			}
+			
+			
+				
+            this.submite = true;
+        } 
+    },
+	created(){
+		var current = new Date(); //'Mar 11 2015' current.getTime() = 1426060964567
+		var followingDay = new Date(current.getTime() + 86400000); // + 1 day in ms
+		this.selected.date = followingDay.toISOString().split('T')[0];
+		
+		var requestOptions = {
+			method: 'GET',
+			redirect: 'follow'
+		};
+			
+		fetch("https://mfc.samgk.ru/api/groups", requestOptions)
+			.then(response => response.json())
+			.then(result => this.selected.groups = result)
+			.catch(error => console.log('error', error));
+		fetch("https://asu.samgk.ru/api/teachers", requestOptions)
+			.then(response => response.json())
+			.then(result => this.selected.teachers = result) 
+			.catch(error => console.log('error', error));
+		
+	}
+
+  }
+  
+  Vue.createApp(Rasp).mount('#raspapp')
+</script>
+</html>
