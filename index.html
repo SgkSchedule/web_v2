@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>СГК Расписание</title>
     <link rel="icon" href="https://samgk.ru/favicon.ico">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.24/vue.global.prod.min.js" 
-        integrity="sha512-KX1eBv1gnv7xoRgc8b2TQRn9sNyelFFInbx/ZuXnuZd53YoUcGLsavkKcEAeeJSSocwMFUpi7A+l2nhKRslt6w==" 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.24/vue.global.min.js" 
+        integrity="sha512-9jzR+CDYy4G7ItNUoOCTinMd8prDY+SXLRgg4+JB8AdYKEtLrIWVwLjPYHHLt3MNnYXMkA2spt4VaUE55O9Qnw==" 
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/alerts.css">
@@ -30,7 +30,7 @@
                     <form action="#">
                         <select name="test" v-model="selected.group">
                                  <option value="">Не выбрано</option>
-                                 <option v-for="(index, type) in this.selected.groups" :value="index.id">{{index.name}}</option>
+                                 <option v-for="(index, type) in this.data.groups" :value="index.id">{{index.name}}</option>
                              </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
                         <button type="button" @click="submitefunc()">Показать</button>
@@ -43,7 +43,7 @@
                     <form action="#">
                         <select name="user" id="user" v-model="selected.teacher">
                             <option value="">Не выбрано</option>
-                             <option v-for="(index, type) in this.selected.teachers" :value="index.id">{{index.name}}</option>
+                            <option v-for="(index, type) in this.data.teachers" :value="index.id">{{index.name}}</option>
                         </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
                         <button type="button" @click="submitefunc(true)">Показать</button>
@@ -54,6 +54,10 @@
             <div class="tap-user-wrap" v-if="isTab('building')">
                 <div class="row-select">
                     <form action="#">
+                        <select name="user" id="user" v-model="selected.building">
+                            <option value="">Не выбрано</option>
+                            <option v-for="(index, type) in this.data.buildings" :value="index.id">{{index.name}}</option>
+                        </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
                         <button type="button" @click="submitefunc(true)">Показать</button>
                     </form>
@@ -63,6 +67,10 @@
             <div class="tap-user-wrap" v-if="isTab('cabinet')">
                 <div class="row-select">
                     <form action="#">
+                        <select name="user" id="user" v-model="selected.cabinet">
+                            <option value="">Не выбрано</option>
+                            <option v-for="(index, type) in this.data.cabinets" :value="index.id">{{index.name}}</option>
+                        </select>
                         <input type="date" name="date" v-model="selected.date" id="date">
                         <button type="button" @click="submitefunc(true)">Показать</button>
                     </form>
