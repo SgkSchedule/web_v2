@@ -21,7 +21,8 @@
             <div class="tabs">
                 <a href="#" class="tab tab-group" v-bind:class="{active: isTab('group')}" @click="setTab('group')">По учебной группе</a>
                 <a href="#" class="tab tab-user" v-bind:class="{active: isTab('user')}" @click="setTab('user')" >По преподавателю</a>
-                <a href="#" class="tab tab-all" v-bind:class="{active: isTab('all')}" @click="setTab('all')">Общее</a>
+                <a href="#" class="tab tab-building" v-bind:class="{active: isTab('building')}" @click="setTab('building')">По корпусу</a>
+                <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a>
             </div> 
  
             <div class="tap-group-wrap" v-if="isTab('group')">
@@ -34,10 +35,9 @@
                         <input type="date" name="date" v-model="selected.date" id="date">
                         <button type="button" @click="submitefunc()">Показать</button>
                     </form>
- 
- 
                 </div>
             </div>
+
             <div class="tap-user-wrap" v-if="isTab('user')">
                 <div class="row-select">
                     <form action="#">
@@ -48,19 +48,24 @@
                         <input type="date" name="date" v-model="selected.date" id="date">
                         <button type="button" @click="submitefunc(true)">Показать</button>
                     </form>
- 
- 
                 </div>
             </div>
- 
-            <div class="tap-user-wrap" v-if="isTab('all')">
+
+            <div class="tap-user-wrap" v-if="isTab('building')">
                 <div class="row-select">
                     <form action="#">
-                        <input type="date" name="date" id="date">
-                        <button type="submit">Показать</button>
+                        <input type="date" name="date" v-model="selected.date" id="date">
+                        <button type="button" @click="submitefunc(true)">Показать</button>
                     </form>
- 
- 
+                </div>
+            </div>
+
+            <div class="tap-user-wrap" v-if="isTab('cabinet')">
+                <div class="row-select">
+                    <form action="#">
+                        <input type="date" name="date" v-model="selected.date" id="date">
+                        <button type="button" @click="submitefunc(true)">Показать</button>
+                    </form>
                 </div>
             </div>
  

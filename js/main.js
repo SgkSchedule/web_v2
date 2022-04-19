@@ -1,13 +1,13 @@
-import ScheduleApi from "./api";
+//import "./api";
 
 const Rasp = {
     data() {
       return {
-        tabs: ['group', 'user', 'all'],
-        activeTab: ['group'],
+        tabs: ['group', 'user', 'building', 'cabinet'],
+        activeTab: 'group',
 		rasp: [],
 		submite: false, 
-		callings:{
+		callings: {
 			1: ' 08:25 <br> 10:00',
 			2: ' 10:10 <br> 11:45',
 			3: ' 12:15 <br> 13:50',
@@ -35,23 +35,17 @@ const Rasp = {
 			teachers: {},
 			teacher: '',
             group: '',
-            user: null,
             date: new Date().toISOString().split('T')[0]
         }
       }
     }, 
     methods: {
-        getTab() {
-            return this.activeTab[this.activeTab.length - 1];
-        },
-
         isTab(tab) {
-            return tab == this.getTab()
+            return tab === this.activeTab;
         },
-
         setTab(tab) {
-            this.activeTab.push(tab)
-        } ,
+            this.activeTab = tab;
+        },
 
         submitefunc(teacher = false) {
 			var requestOptions = {
@@ -78,7 +72,7 @@ const Rasp = {
             this.submite = true;
         } 
     },
-	created(){
+	created() {
 		var current = new Date(); //'Mar 11 2015' current.getTime() = 1426060964567
 		var followingDay = new Date(current.getTime() + 86400000); // + 1 day in ms
 		this.selected.date = followingDay.toISOString().split('T')[0];
