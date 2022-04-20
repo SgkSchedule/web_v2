@@ -33,6 +33,12 @@ body {
     width: 100%;
 }
 
+.info-section {
+    margin: 0 auto;
+    width: 100%;
+    opacity: .5;
+}
+
 .tabs {
     display: flex;
     align-items: center;
@@ -171,6 +177,13 @@ button {
 
 }
 
+.group-item.group-name {
+    flex-basis: 100%;
+    background: #1620A5;
+    color: white;
+    font-size: 1em;
+}
+
 .group-item.type-of-activity {
     flex-basis: 20%;
 }
@@ -203,8 +216,4 @@ button {
         margin-right: 0;
         margin-bottom: 5px;
     }
-
- 
 }
-
-

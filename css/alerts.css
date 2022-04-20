@@ -54,3 +54,7 @@ body {
 .closed {
   display: none;
 }
+
+.alert {
+  margin-top: 10px;
+}

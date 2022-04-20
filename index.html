@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>СГК Расписание</title>
     <link rel="icon" href="https://samgk.ru/favicon.ico">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.24/vue.global.min.js" 
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.24/vue.global.min.js" 
         integrity="sha512-9jzR+CDYy4G7ItNUoOCTinMd8prDY+SXLRgg4+JB8AdYKEtLrIWVwLjPYHHLt3MNnYXMkA2spt4VaUE55O9Qnw==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.24/vue.global.prod.min.js" 
+        integrity="sha512-KX1eBv1gnv7xoRgc8b2TQRn9sNyelFFInbx/ZuXnuZd53YoUcGLsavkKcEAeeJSSocwMFUpi7A+l2nhKRslt6w==" 
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/alerts.css">
 </head>
@@ -22,7 +26,8 @@
                 <a href="#" class="tab tab-group" v-bind:class="{active: isTab('group')}" @click="setTab('group')">По учебной группе</a>
                 <a href="#" class="tab tab-user" v-bind:class="{active: isTab('user')}" @click="setTab('user')" >По преподавателю</a>
                 <a href="#" class="tab tab-building" v-bind:class="{active: isTab('building')}" @click="setTab('building')">По корпусу</a>
-                <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a>
+                <!-- <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a> -->
+                <a href="#" class="tab tab-cabinet">По кабинету (WIP)</a>
             </div> 
  
             <div class="tap-group-wrap" v-if="isTab('group')">
@@ -80,22 +85,23 @@
             <div class="result">
                 <div v-if="rasp.length > 0 " class="line-groups">
                     <div v-for="(index, type) in this.rasp" class="line-group">
-                        <div class="group-item number">
+                        <div class="group-item number" v-if="index.isHeader == undefined">
                             <span class="number-rasp">
                                 {{index.num}}
                             </span>
                         </div>
-                        <div class="group-item time">
+                        <div class="group-item time" v-if="index.isHeader == undefined">
                             <span class="time-rasp" v-html="callings[index.num]">
  
                             </span>
                         </div>
-                         <div v-if="index.nameGroup != '' &amp;&amp; index.nameGroup != undefined &amp;&amp; index.nameGroup != null" class="group-item time">
+                        <div v-if="index.nameGroup != '' && index.nameGroup != undefined && index.nameGroup != null 
+                            && activeTab != 'building' && index.isHeader == undefined" class="group-item time">
                                  <span class="time-rasp" v-html="index.nameGroup">
  
                                  </span>
                              </div>
-                        <div class="group-item activity">
+                        <div class="group-item activity" v-if="index.isHeader == undefined">
                             <div class="activity-rasp">
                                 <b>
                                     {{index.title}} 
@@ -110,12 +116,15 @@
                                  </div>
                             </div>
                         </div>
-                        <div class="group-item type-of-activity">
+                        <div class="group-item type-of-activity" v-if="index.isHeader == undefined">
                             <div class="type-of-activity-rasp">
                                 <div>
                                     {{index.cab}} 
                                 </div>
                             </div>
+                        </div>
+                        <div class="group-item group-name" v-if="index.isHeader != undefined">
+                            <h1>{{index.name}}</h1>
                         </div>
                     </div>
                 </div>
@@ -133,6 +142,17 @@
                      </div>
                  </div>
             </div>
+        </section>
+        <section class="info-section">
+            <h5 style="text-align: center;">
+                Разработано ГАПОУ "СГК"<br>
+                <br>
+                Доработано maksim789456
+                <br>
+                <a href="https://github.com/maksim789456/SgkSchedule">
+                    <i class="fa fa-github" style="font-size:48px;color:black;"></i>
+                </a>
+            </h5>
         </section>
     </div>
     <script src="js/main.js"></script>

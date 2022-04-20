@@ -1,5 +1,14 @@
 const ScheduleApi = {
-    
+    getScheduleByGroup(groupId, date) {
+		return fetch(`https://asu.samgk.ru/api/schedule/${groupId}/${date}`, {method: 'GET'})
+					.then(response => response.json())
+					.catch(error => console.log('error', error));
+	},
+	getScheduleByUser(userId, date) {
+		return fetch(`https://asu.samgk.ru/api/schedule/teacher/${date}/${userId}`, {method: 'GET'})
+				.then(response => response.json())
+				.catch(error => console.log('error', error));
+	}
 }
 
 const PresetValues = {
@@ -46,7 +55,7 @@ const Rasp = {
         tabs: ['group', 'user', 'building', 'cabinet'],
         activeTab: 'group',
 		rasp: [],
-		submite: false, 
+		submite: false,
 		callings: PresetValues.callings,
 		data: {
 			groups: {},
@@ -72,38 +81,53 @@ const Rasp = {
         },
 
         load() {
-			var requestOptions = {
-				method: 'GET'
-			};
-
 			switch (this.activeTab) {
 				case 'group': {
-					fetch(`https://asu.samgk.ru/api/schedule/${this.selected.group}/${this.selected.date}`, requestOptions)
-						.then(response => response.json())
-						.then(result => this.rasp = result.lessons)
-						.catch(error => console.log('error', error));
+					ScheduleApi.getScheduleByGroup(this.selected.group, this.selected.date)
+						.then(result => this.rasp = result.lessons);
 
-					console.log(this.rasp);
+					//console.log(this.rasp);
 					break;
 				}
 				case 'user': {
-					fetch(`https://asu.samgk.ru/api/schedule/teacher/${this.selected.date}/${this.selected.teacher}`, requestOptions)
-						.then(response => response.json())
-						.then(result => this.rasp = result.lessons)
-						.catch(error => console.log('error', error));
+					ScheduleApi.getScheduleByUser(this.selected.teacher, this.selected.date)
+						.then(result => this.rasp = result.lessons);
 
-					console.log(this.rasp);
+					//console.log(this.rasp);
 					break;
 				}
 				case 'building': {
+					this.rasp = [];
+
+					//Максимально отвратное решение но других методов апи нету
+					//Разраб оригинального сайта, если ты это читаешь то сделай нормальный метод и переделай это !!!
+					let building = this.data.buildings.find(x => x.id == this.selected.building);
+
+					//Проходимся по всем групппах из корпуса
+					building.groups.forEach(group => {
+						//Получаем данные по группе
+						ScheduleApi.getScheduleByGroup(group, this.selected.date)
+							.then(result => {
+								//Сначала закидываем заголовок с названием группы
+								let fGroup = this.data.groups.find(x => x.id == group);
+								this.rasp.push({name: fGroup.name, isHeader: true});
+
+								//Потом уже данные по расписанию
+								result.lessons.forEach(data => this.rasp.push(data));
+							});
+					});
 					break;
 				}
 				case 'cabinet': {
+					//TODO
 					break;
 				}
 			}
 			this.submite = true;
-        } 
+        },
+		warn() {
+			this.requestWarn = true;
+		}
     },
 	created() {
 		var current = new Date(); //'Mar 11 2015' current.getTime() = 1426060964567
