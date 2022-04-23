@@ -12,3 +12,4 @@ jobs:
         username: 'SgkSchedule'
         reponame: 'web_v2'
         token: ${{ secrets.GITHUB_TOKEN }}
+        useyarn: true
