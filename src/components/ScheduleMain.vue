@@ -1,12 +1,13 @@
 <template>
 <div class="container-rasp">
+    <modal-window/>
     <section id="rasp">
         <div class="tabs">
             <a href="#" class="tab tab-group" v-bind:class="{active: isTab('group')}" @click="setTab('group')">По учебной группе</a>
             <a href="#" class="tab tab-user" v-bind:class="{active: isTab('user')}" @click="setTab('user')" >По преподавателю</a>
             <a href="#" class="tab tab-building" v-bind:class="{active: isTab('building')}" @click="setTab('building')">По корпусу</a>
-            <!-- <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a> -->
-            <a href="#" class="tab tab-cabinet">По кабинету (WIP)</a>
+            <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a>
+            <!-- <a href="#" class="tab tab-cabinet">По кабинету (WIP)</a> -->
         </div>
         <div class="tap-group-wrap" v-if="isTab('group')">
             <div class="row-select">
@@ -40,6 +41,13 @@
 
         <div class="tap-user-wrap" v-if="isTab('cabinet')">
             <div class="row-select">
+                <form action="#" class="flex justify-center">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                </form>
+            </div>
+            <div class="row-select">
                 <form action="#">
                     <!-- <select class="select-s" name="user" id="user" v-model="selected.cabinet">
                         <option value="">Не выбрано</option>
@@ -47,7 +55,11 @@
                     </select> -->
                     <v-select class="select-s w-full sm:w-1/3 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.cabinet" :options="data.cabinets" label="name"></v-select>
                     <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button>
+                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5"
+                      data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                      Launch static backdrop modal
+                    </button>
+                    <!-- <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button> -->
                 </form>
             </div>
         </div>
@@ -128,8 +140,10 @@
 <script>
 import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
+import ModalWindow from './ModalWindow.vue'
 
 export default {
+  components: { ModalWindow },
   data () {
     return {
       tabs: ['group', 'user', 'building', 'cabinet'],
@@ -211,7 +225,19 @@ export default {
           break
         }
         case 'cabinet': {
-          // TODO
+          // for (let i = 0; i < this.data.teachers.length; i++) {
+          //   ScheduleApi.getScheduleByUser(this.data.teachers[i].id, this.selected.date)
+          //     .then(result => {
+          //       for (let i2 = 0; i2 < result.lessons.length; i2++) {
+          //         if (result.lessons[i2].cab === '1/101') {
+          //           this.rasp[result.lessons[i2].num] = result.lessons[i2]
+          //           console.log(result.lessons[i2])
+          //         }
+          //         console.log('parsing lessons')
+          //       }
+          //     })
+          //   console.log('parsing teachers')
+          // }
           break
         }
       }
