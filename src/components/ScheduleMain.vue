@@ -1,13 +1,11 @@
 <template>
 <div class="container-rasp">
-    <modal-window/>
     <section id="rasp">
         <div class="tabs">
             <a href="#" class="tab tab-group" v-bind:class="{active: isTab('group')}" @click="setTab('group')">По учебной группе</a>
             <a href="#" class="tab tab-user" v-bind:class="{active: isTab('user')}" @click="setTab('user')" >По преподавателю</a>
             <a href="#" class="tab tab-building" v-bind:class="{active: isTab('building')}" @click="setTab('building')">По корпусу</a>
             <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a>
-            <!-- <a href="#" class="tab tab-cabinet">По кабинету (WIP)</a> -->
         </div>
         <div class="tap-group-wrap" v-if="isTab('group')">
             <div class="row-select">
@@ -41,25 +39,22 @@
 
         <div class="tap-user-wrap" v-if="isTab('cabinet')">
             <div class="row-select">
-                <form action="#" class="flex justify-center">
-                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                      </div>
+                <form action="#">
+                    <input type="date" class="w-full sm:w-1/2 sm:mr-4" name="date" v-model="selected.date" id="date">
+                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="loadCabinets()">Загрузить список кабинетов</button>
                 </form>
             </div>
-            <div class="row-select">
+            <div class="row-select" v-if="state.cabinetsLoading">
+                <form action="#" class="flex justify-center">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                      <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                </form>
+            </div>
+            <div class="row-select" v-if="state.cabinetsLoaded">
                 <form action="#">
-                    <!-- <select class="select-s" name="user" id="user" v-model="selected.cabinet">
-                        <option value="">Не выбрано</option>
-                        <option v-for="(index) in this.data.cabinets" :key="index.id" :value="index.id">{{index.name}}</option>
-                    </select> -->
-                    <v-select class="select-s w-full sm:w-1/3 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.cabinet" :options="data.cabinets" label="name"></v-select>
-                    <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5"
-                      data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                      Launch static backdrop modal
-                    </button>
-                    <!-- <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button> -->
+                    <v-select class="select-s w-full sm:w-1/2 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.cabinet" :options="data.cabinets" label="name"></v-select>
+                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="load()">Показать</button>
                 </form>
             </div>
         </div>
@@ -140,10 +135,8 @@
 <script>
 import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
-import ModalWindow from './ModalWindow.vue'
 
 export default {
-  components: { ModalWindow },
   data () {
     return {
       tabs: ['group', 'user', 'building', 'cabinet'],
@@ -163,6 +156,10 @@ export default {
         building: null,
         cabinet: null,
         date: new Date().toISOString().split('T')[0]
+      },
+      state: {
+        cabinetsLoading: false,
+        cabinetsLoaded: false
       }
     }
   },
@@ -172,6 +169,8 @@ export default {
     },
     setTab (tab) {
       this.activeTab = tab
+      this.submite = false
+      this.rasp = []
     },
     load () {
       switch (this.activeTab) {
@@ -225,23 +224,68 @@ export default {
           break
         }
         case 'cabinet': {
-          // for (let i = 0; i < this.data.teachers.length; i++) {
-          //   ScheduleApi.getScheduleByUser(this.data.teachers[i].id, this.selected.date)
-          //     .then(result => {
-          //       for (let i2 = 0; i2 < result.lessons.length; i2++) {
-          //         if (result.lessons[i2].cab === '1/101') {
-          //           this.rasp[result.lessons[i2].num] = result.lessons[i2]
-          //           console.log(result.lessons[i2])
-          //         }
-          //         console.log('parsing lessons')
-          //       }
-          //     })
-          //   console.log('parsing teachers')
-          // }
+          const cabinet = this.data.cabinets.find(x => x.id === this.selected.cabinet.id)
+          this.rasp = cabinet.rasp
           break
         }
       }
       this.submite = true
+    },
+    loadCabinets () {
+      this.state.cabinetsLoading = true
+
+      let rasp = []
+
+      const cache = localStorage.getItem(`cache.${this.selected.date}`)
+      if (cache === null) {
+        let groups = this.data.groups
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Dev mode enabled! To request used only last 5 groups!')
+          groups = groups.slice(Math.max(groups.length - 5, 1))
+        }
+
+        const loadingPromises = []
+        groups.forEach(group => {
+          if (group.id === -1) {
+            return
+          }
+
+          loadingPromises.push(ScheduleApi.getScheduleByGroup(group.id, this.selected.date)
+            .then(result => {
+              const fGroup = this.data.groups.find(x => x.id === group.id)
+
+              result.lessons.forEach(data => {
+                data.nameGroup = fGroup.name
+                rasp.push(data)
+              })
+            })
+          )
+        })
+
+        Promise.all(loadingPromises).then(() => {
+          localStorage.setItem(`cache.${this.selected.date}`, JSON.stringify(rasp))
+        })
+      } else {
+        rasp = JSON.parse(cache)
+      }
+
+      this.data.cabinets = []
+      let id = 0
+      const rawCabinets = this.groupBy(rasp, 'cab')
+      for (const key of Object.keys(rawCabinets)) {
+        const rasp = rawCabinets[key]
+        this.data.cabinets.push({ id: id, name: key, rasp: rasp })
+        id++
+      }
+
+      this.state.cabinetsLoading = false
+      this.state.cabinetsLoaded = true
+    },
+    groupBy (xs, key) {
+      return xs.reduce((rv, x) => {
+        (rv[x[key]] = rv[x[key]] || []).push(x)
+        return rv
+      }, {})
     }
   },
   created () {
