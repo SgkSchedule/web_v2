@@ -226,6 +226,7 @@ export default {
         case 'cabinet': {
           const cabinet = this.data.cabinets.find(x => x.id === this.selected.cabinet.id)
           this.rasp = cabinet.rasp
+          // тест
           break
         }
       }
