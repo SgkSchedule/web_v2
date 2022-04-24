@@ -7,16 +7,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component'
+<script>
 import ScheduleMain from './components/ScheduleMain.vue'
 
-@Options({
-  components: {
-    ScheduleMain
-  }
-})
-export default class App extends Vue {}
+export default {
+  components: { ScheduleMain }
+}
 </script>
 
 <style>
