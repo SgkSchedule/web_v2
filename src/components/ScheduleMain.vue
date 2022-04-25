@@ -41,7 +41,8 @@
             <div class="row-select">
                 <form action="#">
                     <input type="date" class="w-full sm:w-1/2 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="loadCabinets()">Загрузить список кабинетов</button>
+                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }" @click="loadCabinets()">Загрузить список кабинетов</button>
+                    <button type="button" v-if="state.cabinetsLoaded && state.cacheIncluded" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="cleanCache()">Очистить кэш</button>
                 </form>
             </div>
             <div class="row-select" v-if="state.cabinetsLoading">
@@ -159,7 +160,8 @@ export default {
       },
       state: {
         cabinetsLoading: false,
-        cabinetsLoaded: false
+        cabinetsLoaded: false,
+        cacheIncluded: false
       }
     }
   },
@@ -236,6 +238,7 @@ export default {
     loadCabinets () {
       this.state.cabinetsLoading = true
       this.state.cabinetsLoaded = false
+      this.state.cacheIncluded = false
 
       let rasp = []
       let loadingPromise
@@ -269,6 +272,7 @@ export default {
 
           Promise.all(groupsLoadingPromises).then(() => {
             localStorage.setItem(`cache.${this.selected.date}`, JSON.stringify(rasp))
+            this.state.cacheIncluded = true
             resolve()
           })
         })
@@ -294,7 +298,14 @@ export default {
         .then(() => {
           this.state.cabinetsLoading = false
           this.state.cabinetsLoaded = true
+          if (cache !== null) {
+            this.state.cacheIncluded = true
+          }
         })
+    },
+    cleanCache () {
+      localStorage.removeItem(`cache.${this.selected.date}`)
+      this.state.cacheIncluded = false
     },
     groupBy (xs, key) {
       return xs.reduce((rv, x) => {
