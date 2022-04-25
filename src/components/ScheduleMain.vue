@@ -125,7 +125,7 @@
             Разработано ГАПОУ "СГК"<br>
             Доработано maksim789456
           </h5>
-          <a class="" href="https://github.com/maksim789456/SgkSchedule">
+          <a class="" href="https://github.com/SgkSchedule/web_v2">
             <img class="h-12 w-12" :src="require('../../public/github-logo.svg')">
           </a>
         </div>

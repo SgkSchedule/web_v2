@@ -1,26 +1,16 @@
-# SgkSchedule
+# SgkSchedule v2
 
 Веб приложение для показа расписания ГАПОУ "СГК"
 
-## Project setup
+Создано на основе оригинального [сайта](https://samgk.ru/schedule/#)
+
+## Быстрый страрт
 ```
-npm install
+yarn install
+yarn run serve
 ```
 
-### Compiles and hot-reloads for development
+### Сборка для продакшена
 ```
-npm run serve
+yarn run build
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
