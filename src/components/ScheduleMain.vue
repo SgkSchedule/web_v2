@@ -125,7 +125,7 @@
             Доработано maksim789456
           </h5>
           <a class="" href="https://github.com/maksim789456/SgkSchedule">
-            <img class="h-12 w-12" src="/github-logo.svg"/>
+            <img class="h-12 w-12" :src="require('../../public/github-logo.svg')">
           </a>
         </div>
     </section>
@@ -181,19 +181,15 @@ export default {
 
           ScheduleApi.getScheduleByGroup(this.selected.group.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
-
-          // console.log(this.rasp);
           break
         }
         case 'user': {
-          if (this.selected.group.id === -1) {
+          if (this.selected.teacher.id === -1) {
             return
           }
 
           ScheduleApi.getScheduleByUser(this.selected.teacher.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
-
-          // console.log(this.rasp);
           break
         }
         case 'building': {
@@ -224,9 +220,14 @@ export default {
           break
         }
         case 'cabinet': {
+          if (typeof this.selected.cabinet === 'undefined' || this.selected.cabinet === null) {
+            return
+          }
+
           const cabinet = this.data.cabinets.find(x => x.id === this.selected.cabinet.id)
-          this.rasp = cabinet.rasp
-          // тест
+          this.rasp = cabinet.rasp.sort((a, b) => {
+            return a.num - b.num
+          })
           break
         }
       }
@@ -234,53 +235,66 @@ export default {
     },
     loadCabinets () {
       this.state.cabinetsLoading = true
+      this.state.cabinetsLoaded = false
 
       let rasp = []
+      let loadingPromise
 
       const cache = localStorage.getItem(`cache.${this.selected.date}`)
       if (cache === null) {
-        let groups = this.data.groups
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('Dev mode enabled! To request used only last 5 groups!')
-          groups = groups.slice(Math.max(groups.length - 5, 1))
-        }
-
-        const loadingPromises = []
-        groups.forEach(group => {
-          if (group.id === -1) {
-            return
+        loadingPromise = new Promise((resolve) => {
+          let groups = this.data.groups
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('Dev mode enabled! To request used only last 5 groups!')
+            groups = groups.slice(Math.max(groups.length - 5, 1))
           }
 
-          loadingPromises.push(ScheduleApi.getScheduleByGroup(group.id, this.selected.date)
-            .then(result => {
-              const fGroup = this.data.groups.find(x => x.id === group.id)
+          const groupsLoadingPromises = []
+          groups.forEach(group => {
+            if (group.id === -1) {
+              return
+            }
 
-              result.lessons.forEach(data => {
-                data.nameGroup = fGroup.name
-                rasp.push(data)
+            groupsLoadingPromises.push(ScheduleApi.getScheduleByGroup(group.id, this.selected.date)
+              .then(result => {
+                const fGroup = this.data.groups.find(x => x.id === group.id)
+
+                result.lessons.forEach(data => {
+                  data.nameGroup = fGroup.name
+                  rasp.push(data)
+                })
               })
-            })
-          )
-        })
+            )
+          })
 
-        Promise.all(loadingPromises).then(() => {
-          localStorage.setItem(`cache.${this.selected.date}`, JSON.stringify(rasp))
+          Promise.all(groupsLoadingPromises).then(() => {
+            localStorage.setItem(`cache.${this.selected.date}`, JSON.stringify(rasp))
+            resolve()
+          })
         })
       } else {
-        rasp = JSON.parse(cache)
+        loadingPromise = new Promise((resolve) => {
+          rasp = JSON.parse(cache)
+          resolve()
+        })
       }
 
-      this.data.cabinets = []
-      let id = 0
-      const rawCabinets = this.groupBy(rasp, 'cab')
-      for (const key of Object.keys(rawCabinets)) {
-        const rasp = rawCabinets[key]
-        this.data.cabinets.push({ id: id, name: key, rasp: rasp })
-        id++
-      }
-
-      this.state.cabinetsLoading = false
-      this.state.cabinetsLoaded = true
+      loadingPromise
+        .then(() => {
+          this.data.cabinets = []
+          let id = 0
+          const rawCabinets = this.groupBy(rasp, 'cab')
+          for (const key of Object.keys(rawCabinets)) {
+            const rasp = rawCabinets[key]
+            this.data.cabinets.push({ id: id, name: key, rasp: rasp })
+            id++
+          }
+          this.selected.cabinet = this.data.cabinets[0]
+        })
+        .then(() => {
+          this.state.cabinetsLoading = false
+          this.state.cabinetsLoaded = true
+        })
     },
     groupBy (xs, key) {
       return xs.reduce((rv, x) => {
