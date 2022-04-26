@@ -183,6 +183,7 @@ export default {
 
           ScheduleApi.getScheduleByGroup(this.selected.group.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
+            .then(() => this.submite = true)
           break
         }
         case 'user': {
@@ -192,6 +193,7 @@ export default {
 
           ScheduleApi.getScheduleByUser(this.selected.teacher.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
+            .then(() => this.submite = true)
           break
         }
         case 'building': {
@@ -207,9 +209,10 @@ export default {
             groups = groups.slice(Math.max(groups.length - 5, 1))
           }
           // Проходимся по всем групппах из корпуса
+          const groupsLoadingPromises = []
           groups.forEach(group => {
             // Получаем данные по группе
-            ScheduleApi.getScheduleByGroup(group, this.selected.date)
+            groupsLoadingPromises.push(ScheduleApi.getScheduleByGroup(group, this.selected.date)
               .then(result => {
                 // Сначала закидываем заголовок с названием группы
                 const fGroup = this.data.groups.find(x => x.id === group)
@@ -217,8 +220,12 @@ export default {
 
                 // Потом уже данные по расписанию
                 result.lessons.forEach(data => this.rasp.push(data))
-              })
+              }))
           })
+          Promise.all(groupsLoadingPromises)
+            .then(() => {
+              this.submite = true
+            })
           break
         }
         case 'cabinet': {
@@ -230,10 +237,10 @@ export default {
           this.rasp = cabinet.rasp.sort((a, b) => {
             return a.num - b.num
           })
+          this.submite = true
           break
         }
       }
-      this.submite = true
     },
     loadCabinets () {
       this.state.cabinetsLoading = true
