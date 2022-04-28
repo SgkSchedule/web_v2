@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-align-center font-bold text-2xl leading-10 text-[#1620A5] my-8">
+    <h3 class="text-center font-bold text-2xl leading-10 text-[#1620A5] my-8">
       Расписание занятий
     </h3>
     <ScheduleMain/>

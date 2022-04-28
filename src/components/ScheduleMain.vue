@@ -1,11 +1,11 @@
 <template>
 <div class="container-rasp">
-    <section id="rasp">
-        <div class="tabs">
-            <a href="#" class="tab tab-group" v-bind:class="{active: isTab('group')}" @click="setTab('group')">По учебной группе</a>
-            <a href="#" class="tab tab-user" v-bind:class="{active: isTab('user')}" @click="setTab('user')" >По преподавателю</a>
-            <a href="#" class="tab tab-building" v-bind:class="{active: isTab('building')}" @click="setTab('building')">По корпусу</a>
-            <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a>
+    <section id="rasp" class="bg-white shadow-lg rounded-md max-w-4xl min-h-min p-5">
+        <div class="flex items-center flex-col sm:flex-row">
+            <tab-item :tabActive="isTab('group')" @click="setTab('group')" label="По учебной группе"/>
+            <tab-item :tabActive="isTab('user')" @click="setTab('user')" label="По преподавателю"/>
+            <tab-item :tabActive="isTab('building')" @click="setTab('building')" label="По корпусу"/>
+            <tab-item :tabActive="isTab('cabinet')" @click="setTab('cabinet')" label="По кабинету"/>
         </div>
         <div class="tap-group-wrap" v-if="isTab('group')">
             <div class="row-select">
@@ -59,9 +59,9 @@
                 </form>
             </div>
         </div>
-        <div class="result">
-            <div v-if="rasp.length > 0 " class="line-groups">
-                <div v-for="(index) in this.rasp" :key="index.id" class="line-group">
+        <div class="w-full overflow-x-auto">
+            <div v-if="rasp.length > 0 " class="mt-2.5">
+                <div v-for="(index) in this.rasp" :key="index.id" class="flex w-full mb-1.5">
                     <div class="group-item number" v-if="index.isHeader == undefined">
                         <span class="number-rasp">
                             {{index.num}}
@@ -137,7 +137,12 @@
 import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
 
+import tabItem from './TabItem.vue'
+
 export default {
+  components: {
+    tabItem
+  },
   data () {
     return {
       tabs: ['group', 'user', 'building', 'cabinet'],

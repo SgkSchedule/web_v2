@@ -8,19 +8,6 @@ body {
     font-size: 14px;
 }
 
-.text-align-center {
-    text-align: center;
-}
-
-#rasp {
-    background: #FFFFFF;
-    box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.06), 0px 2px 6px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04);
-    border-radius: 5px;
-    max-width: 850px;
-    min-height: 20px;
-    padding: 20px
-}
-
 .container-rasp {
     min-height: 80vh;
     max-width: 850px;
@@ -28,53 +15,6 @@ body {
     width: 100%;
 }
 
-.tabs {
-    display: flex;
-    align-items: center;
-}
-
-.tabs .tab {
-    border: 1px solid #1620A5;
-    box-sizing: border-box;
-    border-radius: 3px;
-    font-style: normal;
-    font-weight: normal;
-
-    line-height: 19px;
-    text-align: center;
-
-    color: #1620A5;
-    text-decoration: none;
-    display: inline-flex;
-    padding: 13px 16px;
-    margin-right: 10px;
-    width: calc(100% / 3);
-}
-
-.tabs .tab:last-child {
-    margin-right: 0px;
-
-}
-
-.tabs .tab.active {
-    border: 1px solid #1620A5;
-    box-sizing: border-box;
-    border-radius: 3px;
-    font-style: normal;
-    font-weight: normal;
-
-    line-height: 19px;
-    text-align: center;
-
-    color: #ffffff;
-    text-decoration: none;
-    background: #1620A5;
-}
-
-.tabs .tab:not(.active):hover {
-    background-color: #F5F9FF;
-    cursor: pointer;
-}
 .row-select form {
     margin-top: 10px;
     display: flex;
@@ -108,17 +48,7 @@ input[type="date"] {
     /* margin-right: 10px; */
 }
 
-.line-groups {
-    margin-top: 10px;
-}
-.line-group {
-    display: flex;
-    width: 100%;
-    margin-bottom: 5px;
-}
-
-
-.line-group .group-item {
+.group-item {
     background: #F5F9FF;
     border: 1px solid rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
@@ -130,7 +60,7 @@ input[type="date"] {
     flex-grow: 1;
 }
 
-.line-group .group-item.activity {
+.group-item.activity {
     justify-content: flex-start;
 }
 
@@ -151,6 +81,13 @@ input[type="date"] {
 
 }
 
+.group-item.type-of-activity {
+    flex-basis: 10%;
+}
+.group-item:last-child {
+    margin-right: 0;
+}
+
 .group-item.group-name {
     flex-basis: 100%;
     background: #1620A5;
@@ -158,29 +95,7 @@ input[type="date"] {
     font-size: 1em;
 }
 
-.group-item.type-of-activity {
-    flex-basis: 10%;
-}
-.line-group .group-item:last-child {
-    margin-right: 0;
-}
-
-.result {
-    width: 100%;
-    overflow-x: auto;
-}
-
 @media screen and (max-width: 640px) {
-    .tabs {
-        flex-wrap: wrap;
-    }    
-
-    .tabs .tab {
-        margin-bottom: 5px;
-        width: 100%;
-        margin-right: 0;
-    }
-
     .row-select form {
         flex-wrap: wrap;
     }
