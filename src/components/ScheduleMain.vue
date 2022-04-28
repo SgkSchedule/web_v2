@@ -73,7 +73,7 @@
                         </span>
                     </div>
                     <div v-if="index.nameGroup != '' && index.nameGroup != undefined && index.nameGroup != null
-                        && activeTab != 'building' && index.isHeader == undefined" class="group-item time">
+                        && activeTab != 'building' && index.isHeader == undefined" class="group-item group">
                              <span class="time-rasp" v-html="index.nameGroup">
                              </span>
                          </div>

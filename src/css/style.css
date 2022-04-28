@@ -126,7 +126,8 @@ input[type="date"] {
     margin-right: 5px;
     display: flex;
     justify-content: center;
-    align-items: center
+    align-items: center;
+    flex-grow: 1;
 }
 
 .line-group .group-item.activity {
@@ -139,6 +140,10 @@ input[type="date"] {
 
 .group-item.time {
     flex-basis: 10%;
+}
+
+.group-item.group {
+    flex-basis: 15%;
 }
 
 .group-item.activity {
@@ -154,7 +159,7 @@ input[type="date"] {
 }
 
 .group-item.type-of-activity {
-    flex-basis: 20%;
+    flex-basis: 10%;
 }
 .line-group .group-item:last-child {
     margin-right: 0;
