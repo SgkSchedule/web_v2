@@ -21,31 +21,13 @@ body {
     align-items: stretch;
     width: 100%;
 }
-.select-s {
-    border: none;
-    background-color: #F5F9FF;
-    /* padding: 13px 16px; */
-    font-size: 14px;
-    font-family: inherit;
-    border-radius: 3px;
-    outline: none;
-    /* width: calc(100% / 3); */
-    -webkit-appearance: none;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    /* margin-right: 10px; */
-}
 
 input[type="date"] {
-    border: none;
     background-color: #F5F9FF;
     padding: 13px 16px;
-    font-size: 14px;
-    font-family: inherit;
     border-radius: 3px;
     outline: none;
-    /* width: calc(100% / 3); */
     border: 1px solid rgba(0, 0, 0, 0.1);
-    /* margin-right: 10px; */
 }
 
 .group-item {

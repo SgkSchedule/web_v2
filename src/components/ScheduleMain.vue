@@ -10,7 +10,7 @@
         <div class="tap-group-wrap" v-if="isTab('group')">
             <div class="row-select">
                 <form action="#" class="justify-between">
-                    <v-select class="select-s w-full sm:w-1/3 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.group" :options="data.groups" label="name"></v-select>
+                    <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" label="name"/>
                     <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
                     <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button>
                 </form>
@@ -20,7 +20,7 @@
         <div class="tap-user-wrap" v-if="isTab('user')">
             <div class="row-select">
                 <form action="#">
-                    <v-select class="select-s w-full sm:w-1/2 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.teacher" :options="data.teachers" label="name"></v-select>
+                    <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" label="name"/>
                     <input type="date" class="w-full sm:w-1/4 sm:mr-4" name="date" v-model="selected.date" id="date">
                     <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/4 px-4 py-3.5" @click="load()">Показать</button>
                 </form>
@@ -30,7 +30,7 @@
         <div class="tap-user-wrap" v-if="isTab('building')">
             <div class="row-select">
                 <form action="#">
-                    <v-select class="select-s w-full sm:w-1/3 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.building" :options="data.buildings" label="name"></v-select>
+                    <sche-select class="sm:w-1/3" v-model="selected.building" :options="data.buildings" label="name"/>
                     <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
                     <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button>
                 </form>
@@ -54,7 +54,7 @@
             </div>
             <div class="row-select" v-if="state.cabinetsLoaded">
                 <form action="#">
-                    <v-select class="select-s w-full sm:w-1/2 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.cabinet" :options="data.cabinets" label="name"></v-select>
+                    <sche-select class="sm:w-1/2" v-model="selected.cabinet" :options="data.cabinets" label="name"/>
                     <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="load()">Показать</button>
                 </form>
             </div>
@@ -106,12 +106,12 @@
             </div>
              <div v-if="this.rasp.length == 0" class="alert__container">
                  <div v-if="submite">
-                     <div class="alert alert__success spacer" role="alert">
+                     <div class="alert alert__success spacer rounded-md" role="alert">
                          <p class="alert__text">Пар нет</p>
                      </div>
                  </div>
                  <div v-if="!submite">
-                     <div class="alert alert__primary spacer" role="alert">
+                     <div class="alert alert__primary spacer rounded-md" role="alert">
                          <p class="alert__text">Вы ещё ничего не выбрали</p>
                      </div>
                  </div>
@@ -138,10 +138,12 @@ import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
 
 import tabItem from './TabItem.vue'
+import scheSelect from './inputs/ScheSelect.vue'
 
 export default {
   components: {
-    tabItem
+    tabItem,
+    scheSelect
   },
   data () {
     return {
