@@ -7,59 +7,50 @@
             <tab-item :tabActive="isTab('building')" @click="setTab('building')" label="По корпусу"/>
             <tab-item :tabActive="isTab('cabinet')" @click="setTab('cabinet')" label="По кабинету"/>
         </div>
+
         <div v-if="isTab('group')">
-            <div class="row-select">
-                <form action="#" class="justify-between">
-                    <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" label="name"/>
-                    <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
-                    <sche-button class="sm:w-1/3" @click="load()" label="Показать"/>
-                </form>
-            </div>
+          <tab-selects>
+            <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" label="name"/>
+            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-button class="sm:w-1/3" @click="load()" label="Показать"/>
+          </tab-selects>
         </div>
 
         <div v-if="isTab('user')">
-            <div class="row-select">
-                <form action="#">
-                    <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" label="name"/>
-                    <sche-date-input class="sm:w-1/4" v-model="selected.date"/>
-                    <sche-button class="sm:w-1/4" @click="load()" label="Показать"/>
-                </form>
-            </div>
+          <tab-selects>
+            <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" label="name"/>
+            <sche-date-input class="sm:w-1/4" v-model="selected.date"/>
+            <sche-button class="sm:w-1/4" @click="load()" label="Показать"/>
+          </tab-selects>
         </div>
 
         <div v-if="isTab('building')">
-            <div class="row-select">
-                <form action="#">
-                    <sche-select class="sm:w-1/3" v-model="selected.building" :options="data.buildings" label="name"/>
-                    <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
-                    <sche-button class="sm:w-1/3" @click="load()" label="Показать"/>
-                </form>
-            </div>
+          <tab-selects>
+            <sche-select class="sm:w-1/3" v-model="selected.building" :options="data.buildings" label="name"/>
+            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-button class="sm:w-1/3" @click="load()" label="Показать"/>
+          </tab-selects>
         </div>
 
         <div v-if="isTab('cabinet')">
-            <div class="row-select">
-                <form action="#">
-                    <sche-date-input class="sm:w-1/2" v-model="selected.date"/>
-                    <sche-button class="sm:w-1/2" @click="loadCabinets()" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }" label="Загрузить список кабинетов"/>
-                    <sche-button class="sm:w-1/2" v-if="state.cabinetsLoaded && state.cacheIncluded" @click="cleanCache()" label="Очистить кэш"/>
-                </form>
+          <tab-selects>
+            <sche-date-input class="sm:w-1/2" v-model="selected.date"/>
+            <sche-button class="sm:w-1/2" @click="loadCabinets()" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }" label="Загрузить список кабинетов"/>
+            <sche-button class="sm:w-1/2" v-if="state.cabinetsLoaded && state.cacheIncluded" @click="cleanCache()" label="Очистить кэш"/>
+          </tab-selects>
+
+          <tab-selects center="true" v-if="state.cabinetsLoading">
+            <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+              <span class="visually-hidden">Загрузка...</span>
             </div>
-            <div class="row-select" v-if="state.cabinetsLoading">
-                <form action="#" class="flex justify-center">
-                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
-                      <span class="visually-hidden">Загрузка...</span>
-                    </div>
-                </form>
-            </div>
-            <div class="row-select" v-if="state.cabinetsLoaded">
-                <form action="#">
-                    <sche-select class="sm:w-1/2" v-model="selected.cabinet" :options="data.cabinets" label="name"/>
-                    <sche-button class="sm:w-1/2" @click="load()" label="Показать"/>
-                    <!-- <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="load()">Показать</button> -->
-                </form>
-            </div>
+          </tab-selects>
+
+          <tab-selects v-if="state.cabinetsLoaded">
+            <sche-select class="sm:w-1/2" v-model="selected.cabinet" :options="data.cabinets" label="name"/>
+            <sche-button class="sm:w-1/2" @click="load()" label="Показать"/>
+          </tab-selects>
         </div>
+
         <div class="w-full overflow-x-auto">
             <div v-if="rasp.length > 0 " class="mt-2.5">
                 <div v-for="(index) in this.rasp" :key="index.id" class="flex w-full mb-1.5">
@@ -138,7 +129,9 @@
 import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
 
-import tabItem from './TabItem.vue'
+import tabItem from './tabs/TabItem.vue'
+import tabSelects from './tabs/TabSelects.vue'
+
 import scheSelect from './inputs/ScheSelect.vue'
 import scheDateInput from './inputs/ScheDateInput.vue'
 import scheButton from './inputs/ScheButton.vue'
@@ -146,6 +139,8 @@ import scheButton from './inputs/ScheButton.vue'
 export default {
   components: {
     tabItem,
+    tabSelects,
+
     scheSelect,
     scheDateInput,
     scheButton
