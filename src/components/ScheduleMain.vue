@@ -7,42 +7,42 @@
             <tab-item :tabActive="isTab('building')" @click="setTab('building')" label="По корпусу"/>
             <tab-item :tabActive="isTab('cabinet')" @click="setTab('cabinet')" label="По кабинету"/>
         </div>
-        <div class="tap-group-wrap" v-if="isTab('group')">
+        <div v-if="isTab('group')">
             <div class="row-select">
                 <form action="#" class="justify-between">
                     <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" label="name"/>
-                    <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button>
+                    <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+                    <sche-button class="sm:w-1/3" @click="load()" label="Показать"/>
                 </form>
             </div>
         </div>
 
-        <div class="tap-user-wrap" v-if="isTab('user')">
+        <div v-if="isTab('user')">
             <div class="row-select">
                 <form action="#">
                     <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" label="name"/>
-                    <input type="date" class="w-full sm:w-1/4 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/4 px-4 py-3.5" @click="load()">Показать</button>
+                    <sche-date-input class="sm:w-1/4" v-model="selected.date"/>
+                    <sche-button class="sm:w-1/4" @click="load()" label="Показать"/>
                 </form>
             </div>
         </div>
 
-        <div class="tap-user-wrap" v-if="isTab('building')">
+        <div v-if="isTab('building')">
             <div class="row-select">
                 <form action="#">
                     <sche-select class="sm:w-1/3" v-model="selected.building" :options="data.buildings" label="name"/>
-                    <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button>
+                    <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+                    <sche-button class="sm:w-1/3" @click="load()" label="Показать"/>
                 </form>
             </div>
         </div>
 
-        <div class="tap-user-wrap" v-if="isTab('cabinet')">
+        <div v-if="isTab('cabinet')">
             <div class="row-select">
                 <form action="#">
-                    <input type="date" class="w-full sm:w-1/2 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }" @click="loadCabinets()">Загрузить список кабинетов</button>
-                    <button type="button" v-if="state.cabinetsLoaded && state.cacheIncluded" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="cleanCache()">Очистить кэш</button>
+                    <sche-date-input class="sm:w-1/2" v-model="selected.date"/>
+                    <sche-button class="sm:w-1/2" @click="loadCabinets()" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }" label="Загрузить список кабинетов"/>
+                    <sche-button class="sm:w-1/2" v-if="state.cabinetsLoaded && state.cacheIncluded" @click="cleanCache()" label="Очистить кэш"/>
                 </form>
             </div>
             <div class="row-select" v-if="state.cabinetsLoading">
@@ -55,7 +55,8 @@
             <div class="row-select" v-if="state.cabinetsLoaded">
                 <form action="#">
                     <sche-select class="sm:w-1/2" v-model="selected.cabinet" :options="data.cabinets" label="name"/>
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="load()">Показать</button>
+                    <sche-button class="sm:w-1/2" @click="load()" label="Показать"/>
+                    <!-- <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="load()">Показать</button> -->
                 </form>
             </div>
         </div>
@@ -139,11 +140,15 @@ import ScheduleApi from '../helpers/ScheduleApi'
 
 import tabItem from './TabItem.vue'
 import scheSelect from './inputs/ScheSelect.vue'
+import scheDateInput from './inputs/ScheDateInput.vue'
+import scheButton from './inputs/ScheButton.vue'
 
 export default {
   components: {
     tabItem,
-    scheSelect
+    scheSelect,
+    scheDateInput,
+    scheButton
   },
   data () {
     return {

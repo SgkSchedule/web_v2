@@ -1,0 +1,9 @@
+<template>
+  <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full px-4 py-3.5">{{label}}</button>
+</template>
+
+<script>
+export default {
+  props: ['label']
+}
+</script>
