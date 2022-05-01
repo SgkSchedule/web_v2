@@ -1,12 +1,12 @@
 <template>
 <div class="container-rasp">
     <section id="rasp" class="bg-white shadow-lg rounded-md max-w-4xl min-h-min p-5">
-        <div class="flex items-center flex-col sm:flex-row">
+        <tab-items>
             <tab-item :tabActive="isTab('group')" @click="setTab('group')">По учебной группе</tab-item>
             <tab-item :tabActive="isTab('user')" @click="setTab('user')">По преподавателю</tab-item>
             <tab-item :tabActive="isTab('building')" @click="setTab('building')">По корпусу</tab-item>
             <tab-item :tabActive="isTab('cabinet')" @click="setTab('cabinet')">По кабинету</tab-item>
-        </div>
+        </tab-items>
 
         <div v-if="isTab('group')">
           <tab-selects>
@@ -113,11 +113,11 @@
     <section class="w-full opacity-40 mt-2">
         <div class="flex flex-col place-items-center">
           <h5 class="text-center leading-6">
-            SgkSchedule v2<br>
+            <button title="Окрыть настройки">SgkSchedule v2</button><br>
             Разработано ГАПОУ "СГК"<br>
-            Доработано maksim789456
+            Доработано <a href="https://github.com/maksim789456">maksim789456</a>
           </h5>
-          <a class="" href="https://github.com/SgkSchedule/web_v2">
+          <a href="https://github.com/SgkSchedule/web_v2">
             <img class="h-12 w-12" :src="require('../../public/github-logo.svg')">
           </a>
         </div>
@@ -129,8 +129,9 @@
 import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
 
+import tabItems from './tabs/TabItemsContainer.vue'
 import tabItem from './tabs/TabItem.vue'
-import tabSelects from './tabs/TabSelects.vue'
+import tabSelects from './tabs/TabSelectsContainer.vue'
 
 import scheSelect from './inputs/ScheSelect.vue'
 import scheDateInput from './inputs/ScheDateInput.vue'
@@ -138,6 +139,7 @@ import scheButton from './inputs/ScheButton.vue'
 
 export default {
   components: {
+    tabItems,
     tabItem,
     tabSelects,
 
