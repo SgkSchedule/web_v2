@@ -3,7 +3,7 @@ import App from './App.vue'
 import './registerServiceWorker'
 import './css/style.css'
 import './css/alerts.css'
-import 'tw-elements'
+import 'flowbite'
 import 'vue-select/dist/vue-select.css'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
