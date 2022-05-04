@@ -149,7 +149,8 @@ export default {
         groups: [],
         teachers: [],
         buildings: PresetValues.buildings,
-        cabinets: []
+        cabinets: [],
+        errors: []
       },
       selected: {
         teacher: null,
@@ -161,7 +162,8 @@ export default {
       state: {
         cabinetsLoading: false,
         cabinetsLoaded: false,
-        cacheIncluded: false
+        cacheIncluded: false,
+        preloadFailed: false
       }
     }
   },
@@ -324,15 +326,28 @@ export default {
     }
 
     fetch('https://mfc.samgk.ru/api/groups', requestOptions)
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 200) {
+          return response.json()
+        }
+        throw new Error('Groups api error')
+      })
       .then(result => {
         this.data.groups = result
         this.data.groups.unshift({ id: -1, name: 'Не выбрано' })
         this.selected.group = this.data.groups[0]
       })
-      .catch(error => console.log('error', error))
+      .catch(error => {
+        this.state.preloadFailed = true
+        this.data.errors.push(error)
+      })
     fetch('https://asu.samgk.ru/api/teachers', requestOptions)
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 200) {
+          return response.json()
+        }
+        throw new Error('Teacher api error')
+      })
       .then(result => {
         this.data.teachers = result
         // TODO: Move this and add enable/disable button
@@ -356,9 +371,16 @@ export default {
         this.data.teachers.unshift({ id: -1, name: 'Не выбрано' })
         this.selected.teacher = this.data.teachers[0]
       })
-      .catch(error => console.log('error', error))
+      .catch(error => {
+        this.state.preloadFailed = true
+        this.data.errors.push(error)
+      })
 
     this.selected.building = this.data.buildings[0]
+
+    if (this.state.preloadFailed) {
+      this.$emit('openWarn', this.data.errors)
+    }
   }
 }
 </script>
