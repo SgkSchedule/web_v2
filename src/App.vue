@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-center font-bold text-2xl leading-10 text-[#1620A5] my-8">
+    <h3 class="text-center font-bold text-2xl leading-10 text-[#1620A5] dark:text-gray-50 my-8 font-title">
       Расписание занятий
     </h3>
     <ScheduleMain @openWarn="openWarnHadler"/>
@@ -25,15 +25,16 @@ export default {
       this.openWarn = true
       this.errors = errors
     }
+  },
+  mounted () {
+    const bodyCssClasses = ['bg-light-background', 'dark:bg-gray-900', 'dark:text-gray-50',
+      'text-sm', 'font-text']
+    bodyCssClasses.map(cssClass => document.body.classList.add(cssClass))
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
+@import url('https://fonts.googleapis.com/css2?family=Manrope');
+@import url('https://fonts.googleapis.com/css2?family=Inter');
 </style>

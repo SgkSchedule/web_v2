@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    font-family: "Open Sans", Arial, Helvetica, sans-serif;
-    background: #F6F6F6;
-    font-size: 14px;
-}
-
 .container-rasp {
     min-height: 80vh;
     max-width: 850px;

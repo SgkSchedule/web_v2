@@ -1,6 +1,6 @@
 <template>
 <div class="container-rasp">
-    <section id="rasp" class="bg-white shadow-lg rounded-md max-w-4xl min-h-min p-5">
+    <section id="rasp" class="bg-white dark:bg-gray-800 shadow-lg rounded-md max-w-4xl min-h-min p-5">
         <tab-items>
             <tab-item :tabActive="isTab('group')" @click="setTab('group')">По учебной группе</tab-item>
             <tab-item :tabActive="isTab('user')" @click="setTab('user')">По преподавателю</tab-item>
@@ -96,16 +96,16 @@
                     </div>
                 </div>
             </div>
-             <div v-if="this.rasp.length == 0" class="alert__container">
+             <div v-if="this.rasp.length == 0" class="mt-5">
                  <div v-if="submite">
-                     <div class="alert alert__success spacer rounded-md" role="alert">
-                         <p class="alert__text">Пар нет</p>
-                     </div>
+                     <div class="p-4 mb-0.5 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+                      Пар нет
+                    </div>
                  </div>
                  <div v-if="!submite">
-                     <div class="alert alert__primary spacer rounded-md" role="alert">
-                         <p class="alert__text">Вы ещё ничего не выбрали</p>
-                     </div>
+                   <div class="p-4 mb-0.5 text-sm text-blue-700 bg-blue-100 rounded-lg dark:bg-blue-200 dark:text-blue-800" role="alert">
+                     Вы ещё ничего не выбрали
+                  </div>
                  </div>
              </div>
         </div>
@@ -118,7 +118,7 @@
             Доработано <a href="https://github.com/maksim789456">maksim789456</a>
           </h5>
           <a href="https://github.com/SgkSchedule/web_v2">
-            <img class="h-12 w-12" :src="require('../../public/github-logo.svg')">
+            <img class="h-12 w-12 dark:invert" :src="require('../../public/github-logo.svg')">
           </a>
         </div>
     </section>
