@@ -218,12 +218,14 @@ export default {
             // Получаем данные по группе
             groupsLoadingPromises.push(ScheduleApi.getScheduleByGroup(group, this.selected.date)
               .then(result => {
-                // Сначала закидываем заголовок с названием группы
-                const fGroup = this.data.groups.find(x => x.id === group)
-                this.rasp.push({ name: fGroup.name, isHeader: true })
+                if (result.lessons.length > 0) {
+                  // Сначала закидываем заголовок с названием группы
+                  const fGroup = this.data.groups.find(x => x.id === group)
+                  this.rasp.push({ name: fGroup.name, isHeader: true })
 
-                // Потом уже данные по расписанию
-                result.lessons.forEach(data => this.rasp.push(data))
+                  // Потом уже данные по расписанию
+                  result.lessons.forEach(data => this.rasp.push(data))
+                }
               }))
           })
           Promise.all(groupsLoadingPromises)
