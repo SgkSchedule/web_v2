@@ -3,8 +3,8 @@
     <h3 class="text-center font-bold text-2xl leading-10 text-[#1620A5] dark:text-gray-50 my-8 font-title">
       Расписание занятий
     </h3>
-    <ScheduleMain @openWarn="openWarnHadler"/>
-    <warning-screen v-if="openWarn" :errors="errors"/>
+    <ScheduleMain @openWarn="openWarnHandler"/>
+    <WarningScreen v-if="openWarn" :errors="errors"/>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
     }
   },
   methods: {
-    openWarnHadler (errors) {
+    openWarnHandler (errors) {
       this.openWarn = true
       this.errors = errors
     }
