@@ -102,7 +102,7 @@
     <section class="w-full opacity-40 mt-2">
         <div class="flex flex-col place-items-center">
           <h5 class="text-center leading-6">
-            <button title="Окрыть настройки">SgkSchedule v2</button><br>
+            <button title="Окрыть настройки" @click="openSettings">SgkSchedule v2 (⚙️)</button><br>
             Разработано ГАПОУ "СГК"<br>
             Доработано <a href="https://github.com/maksim789456">maksim789456</a>
           </h5>
@@ -117,6 +117,7 @@
 <script>
 import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
+import SettingsManager from '../helpers/SettingsManager'
 
 import tabItems from './tabs/TabItemsContainer.vue'
 import tabItem from './tabs/TabItem.vue'
@@ -140,6 +141,7 @@ export default {
 
     rowItem
   },
+  emits: ['openWarn', 'openSettings'],
   data () {
     return {
       tabs: ['group', 'user', 'building', 'cabinet'],
@@ -147,6 +149,7 @@ export default {
       rasp: [],
       submite: false,
       callings: PresetValues.callings,
+      settings: {},
       data: {
         groups: [],
         teachers: [],
@@ -325,9 +328,14 @@ export default {
         (rv[x[key]] = rv[x[key]] || []).push(x)
         return rv
       }, {})
+    },
+    openSettings () {
+      this.$emit('openSettings')
     }
   },
   created () {
+    this.settings = SettingsManager.getOrCreateSettings()
+
     const current = new Date() // 'Mar 11 2015' current.getTime() = 1426060964567
     const followingDay = new Date(current.getTime() + 86400000) // + 1 day in ms
     this.selected.date = followingDay.toISOString().split('T')[0]
@@ -360,25 +368,32 @@ export default {
         throw new Error('Teacher api error')
       })
       .then(result => {
-        this.data.teachers = result
-        // TODO: Move this and add enable/disable button
-        this.data.teachers = this.data.teachers.map(teacher => {
-          const splited = teacher.name.replace(/\s+/g, ' ').trim().split(' ')
-          if (splited.length === 2) {
-            const lastName = splited[0]
-            const firstNameChar = splited[1][0]
-            teacher.name = `${lastName} ${firstNameChar}.`
-          }
+        return new Promise(resolve => {
+          if (this.settings.abbreviation === true) {
+            resolve(result.map(teacher => {
+              const splited = teacher.name.replace(/\s+/g, ' ').trim().split(' ')
+              if (splited.length === 2) {
+                const lastName = splited[0]
+                const firstNameChar = splited[1][0]
+                teacher.name = `${lastName} ${firstNameChar}.`
+              }
 
-          if (splited.length >= 3) {
-            const lastName = splited[0]
-            const firstNameChar = splited[1][0]
-            const middleNameChar = splited[2][0]
-            teacher.name = `${lastName} ${firstNameChar}. ${middleNameChar}.`
-          }
+              if (splited.length >= 3) {
+                const lastName = splited[0]
+                const firstNameChar = splited[1][0]
+                const middleNameChar = splited[2][0]
+                teacher.name = `${lastName} ${firstNameChar}. ${middleNameChar}.`
+              }
 
-          return teacher
+              return teacher
+            }))
+          } else {
+            resolve(result)
+          }
         })
+      })
+      .then(teachers => {
+        this.data.teachers = teachers
         this.data.teachers.unshift({ id: -1, name: 'Не выбрано' })
         this.selected.teacher = this.data.teachers[0]
       })
