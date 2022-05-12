@@ -58,7 +58,7 @@
                   <row-item v-if="index.isHeader == undefined">
                     <span>{{index.num}}</span>
                   </row-item>
-                  <row-item v-if="index.isHeader == undefined">
+                  <row-item class="!basis-[10%]" v-if="index.isHeader == undefined">
                     <span v-html="callings[index.num]"></span>
                   </row-item>
                   <row-item v-if="index.nameGroup != '' && index.nameGroup != undefined && index.nameGroup != null
