@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-[#F5F9FF] border border-black/5 rounded-sm
+  <div class="bg-select-background dark:bg-gray-700 border border-black/5 rounded-sm
     p-4 mr-1.5 last:mr-0
     flex items-center grow basis-1/12 justify-center"
-    v-bind:class="[isGroupHeader ? ['!basis-full', 'text-base', '!bg-[#1620A5]', 'text-white'] : '']"
+    v-bind:class="[isGroupHeader ? ['!basis-full', 'text-base', '!bg-sgk-blue', 'text-white'] : '']"
     v-bind="$attrs">
     <slot></slot>
   </div>

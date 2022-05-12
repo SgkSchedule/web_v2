@@ -17,13 +17,13 @@
             <div class="flex items-center h-5">
               <input id="darkMode" type="checkbox" v-model="settings.darkMode" @change="settingsChanged($event)" class="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
             </div>
-            <label for="darkMode" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">Темная тема</label>
+            <label for="darkMode" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-50">Темная тема<div class="opacity-50">(дизайн может измениться)</div></label>
           </div>
           <div class="flex items-start">
             <div class="flex items-center h-5">
               <input id="abbreviation" type="checkbox" v-model="settings.abbreviation" @change="settingsChanged($event)" class="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
             </div>
-            <label for="abbreviation" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">Сокращение имеи и отчества у преподавателей</label>
+            <label for="abbreviation" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-50">Сокращение имеи и отчества у преподавателей</label>
           </div>
         </div>
       </div>

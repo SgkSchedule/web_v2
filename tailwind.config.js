@@ -26,7 +26,9 @@ module.exports = {
       transparent: 'transparent',
       current: 'currentColor',
       white: '#ffffff',
-      'light-background': '#f5f5f4'
+      'light-background': '#f5f5f4',
+      'select-background': '#f5f9ff',
+      'sgk-blue': '#1620a5'
     },
     fontFamily: {
       text: 'Inter, sans-serif',
