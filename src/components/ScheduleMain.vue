@@ -52,51 +52,44 @@
           </tab-selects>
         </div>
 
-        <div class="w-full overflow-x-auto">
-            <div v-if="rasp.length > 0 " class="mt-2.5">
-                <div v-for="(index) in this.rasp" :key="index.id" class="flex w-full mb-1.5">
-                  <row-item v-if="index.isHeader == undefined">
-                    <span>{{index.num}}</span>
-                  </row-item>
-                  <row-item class="!basis-[10%]" v-if="index.isHeader == undefined">
-                    <span v-html="callings[index.num]"></span>
-                  </row-item>
-                  <row-item v-if="index.nameGroup != '' && index.nameGroup != undefined && index.nameGroup != null
-                    && activeTab != 'building' && index.isHeader == undefined" class="!basis-2/12">
-                      <span v-html="index.nameGroup"></span>
-                  </row-item>
-                  <row-item class="!basis-7/12 !justify-start" v-if="index.isHeader == undefined">
-                    <div>
-                      <b>{{index.title}}</b><br>
-                      <div>{{index.teachername}}</div>
-                      <div v-if="index.resource != ''">
-                        <hr>
-                        <div v-html="index.resource"></div>
-                      </div>
-                    </div>
-                  </row-item>
-                  <row-item v-if="index.isHeader == undefined">
-                      <div>
-                        {{index.cab}}
-                      </div>
-                  </row-item>
-                  <row-item v-if="index.isHeader != undefined" isGroupHeader="true">
-                      <h1>{{index.name}}</h1>
-                  </row-item>
+        <div v-if="this.rasp.length == 0" class="w-full overflow-x-auto mt-5">
+          <div v-bind:class="[submite ? 'success-alert' : 'info-alert']" role="alert">
+            <p v-if="!submite">Вы ещё ничего не выбрали</p>
+            <p v-else>Пар нет</p>
+          </div>
+        </div>
+
+        <div v-if="rasp.length > 0" class="w-full overflow-x-auto mt-5">
+          <div v-for="(index) in this.rasp" :key="index.id" class="flex w-full mb-1.5">
+            <row-item v-if="index.isHeader == undefined">
+              <span>{{index.num}}</span>
+            </row-item>
+            <row-item class="!basis-[10%]" v-if="index.isHeader == undefined">
+              <span v-html="callings[index.num]"></span>
+            </row-item>
+            <row-item v-if="index.nameGroup != '' && index.nameGroup != undefined && index.nameGroup != null
+              && activeTab != 'building' && index.isHeader == undefined" class="!basis-2/12">
+                <span v-html="index.nameGroup"></span>
+            </row-item>
+            <row-item class="!basis-7/12 !justify-start" v-if="index.isHeader == undefined">
+              <div>
+                <b>{{index.title}}</b><br>
+                <div>{{index.teachername}}</div>
+                <div v-if="index.resource != ''">
+                  <hr>
+                  <div v-html="index.resource"></div>
                 </div>
-            </div>
-             <div v-if="this.rasp.length == 0" class="mt-5">
-                 <div v-if="submite">
-                    <div class="p-4 mb-0.5 text-base text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
-                      Пар нет
-                    </div>
-                 </div>
-                 <div v-if="!submite">
-                   <div class="p-4 mb-0.5 text-base text-blue-700 bg-blue-100 rounded-lg dark:bg-blue-200 dark:text-blue-800" role="alert">
-                     Вы ещё ничего не выбрали
-                  </div>
-                 </div>
-             </div>
+              </div>
+            </row-item>
+            <row-item v-if="index.isHeader == undefined">
+                <div>
+                  {{index.cab}}
+                </div>
+            </row-item>
+            <row-item v-if="index.isHeader != undefined" isGroupHeader="true">
+                <h1>{{index.name}}</h1>
+            </row-item>
+          </div>
         </div>
     </section>
     <section class="w-full opacity-40 mt-2">
