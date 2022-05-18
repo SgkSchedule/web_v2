@@ -5,7 +5,12 @@ const SettingsManager = {
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedSettingsJson = window.localStorage.getItem('settings')
       if (storedSettingsJson === null) {
-        const settings = { darkMode: false, abbreviation: true }
+        const settings = {
+          darkMode: false,
+          abbreviation: true,
+          multipleSelection: false,
+          addDayToCurrentDate: true
+        } as Settings
 
         const userMedia = window.matchMedia('(prefers-color-scheme: dark)')
         if (userMedia.matches) {
