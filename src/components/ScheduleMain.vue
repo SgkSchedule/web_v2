@@ -60,36 +60,7 @@
         </div>
 
         <div v-if="rasp.length > 0" class="w-full overflow-x-auto mt-5">
-          <div v-for="(index) in this.rasp" :key="index.id" class="flex w-full mb-1.5">
-            <row-item v-if="index.isHeader == undefined">
-              <span>{{index.num}}</span>
-            </row-item>
-            <row-item class="!basis-[10%]" v-if="index.isHeader == undefined">
-              <span v-html="callings[index.num]"></span>
-            </row-item>
-            <row-item v-if="index.nameGroup != '' && index.nameGroup != undefined && index.nameGroup != null
-              && activeTab != 'building' && index.isHeader == undefined" class="!basis-2/12">
-                <span v-html="index.nameGroup"></span>
-            </row-item>
-            <row-item class="!basis-7/12 !justify-start" v-if="index.isHeader == undefined">
-              <div>
-                <b>{{index.title}}</b><br>
-                <div>{{index.teachername}}</div>
-                <div v-if="index.resource != ''">
-                  <hr>
-                  <div v-html="index.resource"></div>
-                </div>
-              </div>
-            </row-item>
-            <row-item v-if="index.isHeader == undefined">
-                <div>
-                  {{index.cab}}
-                </div>
-            </row-item>
-            <row-item v-if="index.isHeader != undefined" isGroupHeader="true">
-                <h1>{{index.name}}</h1>
-            </row-item>
-          </div>
+          <schedule-view :rasp="this.rasp" :printGroupName="this.activeTab != 'building'"/>
         </div>
     </section>
     <section class="w-full opacity-40 mt-2">
@@ -120,7 +91,7 @@ import scheSelect from './inputs/ScheSelect.vue'
 import scheDateInput from './inputs/ScheDateInput.vue'
 import scheButton from './inputs/ScheButton.vue'
 
-import rowItem from './schedule/RowItem.vue'
+import scheduleView from './schedule/ScheduleView.vue'
 
 export default {
   components: {
@@ -132,7 +103,7 @@ export default {
     scheDateInput,
     scheButton,
 
-    rowItem
+    scheduleView,
   },
   emits: ['openWarn', 'openSettings'],
   data () {
@@ -141,7 +112,6 @@ export default {
       activeTab: 'group',
       rasp: [],
       submite: false,
-      callings: PresetValues.callings,
       settings: {},
       data: {
         groups: [],
