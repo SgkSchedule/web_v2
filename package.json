@@ -34,6 +34,7 @@
     "eslint-plugin-node": "latest",
     "eslint-plugin-promise": "latest",
     "eslint-plugin-vue": "latest",
+    "eslint-plugin-n": "^15.2.0",
     "postcss": "latest",
     "tailwindcss": "latest",
     "typescript": "latest"
