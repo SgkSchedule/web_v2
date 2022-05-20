@@ -67,8 +67,7 @@
         <div class="flex flex-col place-items-center">
           <h5 class="text-center leading-6">
             <button title="Окрыть настройки" @click="openSettings">SgkSchedule v2.1 (⚙️)</button><br>
-            Разработано ГАПОУ "СГК"<br>
-            Доработано <a href="https://github.com/maksim789456">maksim789456</a>
+            Copyright © 2022 <a href="https://github.com/maksim789456">maksim789456</a>, <a href="https://samgk.ru/">ГАПОУ "СГК"</a>
           </h5>
           <a href="https://github.com/SgkSchedule/web_v2">
             <img class="h-12 w-12 dark:invert" :src="require('../../public/github-logo.svg')">
