@@ -355,9 +355,11 @@ export default {
   created () {
     this.settings = SettingsManager.getOrCreateSettings()
 
-    const current = new Date() // 'Mar 11 2015' current.getTime() = 1426060964567
-    const followingDay = new Date(current.getTime() + 86400000) // + 1 day in ms
-    this.selected.date = followingDay.toISOString().split('T')[0]
+    const current = new Date()
+    if (this.settings.addDayToCurrentDate) {
+      current.setDate(current.getDate() + 1)
+    }
+    this.selected.date = current.toISOString().split('T')[0]
 
     const api = new ScheduleApi()
 
