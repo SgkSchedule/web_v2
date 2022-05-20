@@ -232,13 +232,8 @@ export default {
             groups = groups.slice(Math.max(groups.length - 5, 1))
           }
 
-          const groupsLoadingPromises = []
-          groups.forEach(group => {
-            if (group.id === -1) {
-              return
-            }
-
-            groupsLoadingPromises.push(api.getScheduleByGroup(group.id, this.selected.date)
+          const loadSchedule = (group) => {
+            return api.getScheduleByGroup(group.id, this.selected.date)
               .then(result => {
                 const fGroup = this.data.groups.find(x => x.id === group.id)
 
@@ -247,10 +242,22 @@ export default {
                   rasp.push(data)
                 })
               })
-            )
+          }
+
+          let chainPromise = null
+          groups.forEach(group => {
+            if (group.id === -1) {
+              return
+            }
+
+            if (chainPromise === null) {
+              chainPromise = loadSchedule(group)
+            } else {
+              chainPromise = chainPromise.then(() => loadSchedule(group))
+            }
           })
 
-          Promise.all(groupsLoadingPromises).then(() => {
+          chainPromise.then(() => {
             localStorage.setItem(`cache.${this.selected.date}`, JSON.stringify(rasp))
             this.state.cacheIncluded = true
             resolve()
