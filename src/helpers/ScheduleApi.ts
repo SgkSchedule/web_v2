@@ -1,24 +1,54 @@
-const ScheduleApi = {
-  getScheduleByGroup (groupId: number, date: string) {
-    return fetch(`https://asu.samgk.ru/api/schedule/${groupId}/${date}`, { method: 'GET' })
-      .then(response => response.json())
-      .catch(error => console.log('error', error))
-  },
-  getScheduleByUser (userId: number, date: string) {
-    return fetch(`https://asu.samgk.ru/api/schedule/teacher/${date}/${userId}`, { method: 'GET' })
-      .then(response => response.json())
-      .catch(error => console.log('error', error))
-  },
-  getGroups () {
-    return fetch('https://mfc.samgk.ru/api/groups', { method: 'GET' })
-      .then(response => response.json())
-      .catch(error => console.log('error', error))
-  },
-  getTeachers () {
-    return fetch('https://asu.samgk.ru/api/teachers', { method: 'GET' })
-      .then(response => response.json())
-      .catch(error => console.log('error', error))
+import axios, { AxiosError, AxiosResponse } from 'axios'
+import { NamedEntity } from '@/types/NamedEntity'
+import Settings from '@/types/Settings'
+import SettingsManager from './SettingsManager'
+import NameReducer from './NameReducer'
+
+export default class ScheduleApi {
+  private settings: Settings
+
+  constructor () {
+    this.settings = SettingsManager.getOrCreateSettings()
+  }
+
+  async getScheduleByGroup (groupId: number, date: string) {
+    return await axios.get(`https://asu.samgk.ru/api/schedule/${groupId}/${date}`)
+      .then(this.handleResponse)
+      .catch(this.handleError)
+  }
+
+  async getScheduleByUser (userId: number, date: string) {
+    return await axios.get(`https://asu.samgk.ru/api/schedule/teacher/${date}/${userId}`)
+      .then(this.handleResponse)
+      .catch(this.handleError)
+  }
+
+  async getGroups () {
+    return await axios.get('https://mfc.samgk.ru/api/groups')
+      .then(this.handleResponse)
+      .catch(this.handleError)
+  }
+
+  async getTeachers () {
+    return await axios.get('https://asu.samgk.ru/api/teachers')
+      .then(this.handleResponse)
+      .then((teachers: NamedEntity[]) =>
+        this.settings.abbreviation ? teachers.map(NameReducer.reduce) : teachers)
+      .catch(this.handleError)
+  }
+
+  private handleResponse (response: AxiosResponse) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(response)
+    }
+
+    return response.data
+  }
+
+  private handleError (error: AxiosError) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(error)
+    }
+    return error
   }
 }
-
-export default ScheduleApi

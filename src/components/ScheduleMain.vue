@@ -1,133 +1,76 @@
 <template>
-<div class="container-rasp">
-    <section id="rasp">
-        <div class="tabs">
-            <a href="#" class="tab tab-group" v-bind:class="{active: isTab('group')}" @click="setTab('group')">По учебной группе</a>
-            <a href="#" class="tab tab-user" v-bind:class="{active: isTab('user')}" @click="setTab('user')" >По преподавателю</a>
-            <a href="#" class="tab tab-building" v-bind:class="{active: isTab('building')}" @click="setTab('building')">По корпусу</a>
-            <a href="#" class="tab tab-cabinet" v-bind:class="{active: isTab('cabinet')}" @click="setTab('cabinet')">По кабинету</a>
-        </div>
-        <div class="tap-group-wrap" v-if="isTab('group')">
-            <div class="row-select">
-                <form action="#" class="justify-between">
-                    <v-select class="select-s w-full sm:w-1/3 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.group" :options="data.groups" label="name"></v-select>
-                    <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button>
-                </form>
-            </div>
+<div class="max-w-4xl m-auto w-full">
+    <section id="rasp" class="bg-white dark:bg-gray-800 shadow-lg rounded-md max-w-4xl min-h-min p-5">
+        <tab-items>
+            <tab-item :tabActive="isTab('group')" @click="setTab('group')">По учебной группе</tab-item>
+            <tab-item :tabActive="isTab('user')" @click="setTab('user')">По преподавателю</tab-item>
+            <tab-item :tabActive="isTab('building')" @click="setTab('building')">По корпусу</tab-item>
+            <tab-item :tabActive="isTab('cabinet')" @click="setTab('cabinet')">По кабинету</tab-item>
+        </tab-items>
+
+        <div v-if="isTab('group')">
+          <tab-selects>
+            <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" :multiple="settings.multipleSelection"
+              :placeholder="settings.multipleSelection ? 'Выберите группы' : 'Выберите группу'" label="name"/>
+            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-button class="sm:w-1/3" @click="load()"/>
+          </tab-selects>
         </div>
 
-        <div class="tap-user-wrap" v-if="isTab('user')">
-            <div class="row-select">
-                <form action="#">
-                    <v-select class="select-s w-full sm:w-1/2 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.teacher" :options="data.teachers" label="name"></v-select>
-                    <input type="date" class="w-full sm:w-1/4 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/4 px-4 py-3.5" @click="load()">Показать</button>
-                </form>
-            </div>
+        <div v-if="isTab('user')">
+          <tab-selects>
+            <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" :multiple="settings.multipleSelection"
+              :placeholder="settings.multipleSelection ? 'Выберите преподавателей' : 'Выберите преподавателя'" label="name"/>
+            <sche-date-input class="sm:w-1/4" v-model="selected.date"/>
+            <sche-button class="sm:w-1/4" @click="load()"/>
+          </tab-selects>
         </div>
 
-        <div class="tap-user-wrap" v-if="isTab('building')">
-            <div class="row-select">
-                <form action="#">
-                    <v-select class="select-s w-full sm:w-1/3 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.building" :options="data.buildings" label="name"></v-select>
-                    <input type="date" class="w-full sm:w-1/3 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/3 px-4 py-3.5" @click="load()">Показать</button>
-                </form>
-            </div>
+        <div v-if="isTab('building')">
+          <tab-selects>
+            <sche-select class="sm:w-1/3" v-model="selected.building" :options="data.buildings" label="name"/>
+            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-button class="sm:w-1/3" @click="load()"/>
+          </tab-selects>
         </div>
 
-        <div class="tap-user-wrap" v-if="isTab('cabinet')">
-            <div class="row-select">
-                <form action="#">
-                    <input type="date" class="w-full sm:w-1/2 sm:mr-4" name="date" v-model="selected.date" id="date">
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }" @click="loadCabinets()">Загрузить список кабинетов</button>
-                    <button type="button" v-if="state.cabinetsLoaded && state.cacheIncluded" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="cleanCache()">Очистить кэш</button>
-                </form>
-            </div>
-            <div class="row-select" v-if="state.cabinetsLoading">
-                <form action="#" class="flex justify-center">
-                    <svg role="status" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                    </svg>
-                </form>
-            </div>
-            <div class="row-select" v-if="state.cabinetsLoaded">
-                <form action="#">
-                    <v-select class="select-s w-full sm:w-1/2 sm:mr-4 px-3 py-2 mb-1.5 sm:mb-0" v-model="selected.cabinet" :options="data.cabinets" label="name"></v-select>
-                    <button type="button" class="bg-[#1620A5] text-gray-50 rounded w-full sm:w-1/2 px-4 py-3.5" @click="load()">Показать</button>
-                </form>
-            </div>
-        </div>
-        <div class="result">
-            <div v-if="rasp.length > 0 " class="line-groups">
-                <div v-for="(index) in this.rasp" :key="index.id" class="line-group">
-                    <div class="group-item number" v-if="index.isHeader == undefined">
-                        <span class="number-rasp">
-                            {{index.num}}
-                        </span>
-                    </div>
-                    <div class="group-item time" v-if="index.isHeader == undefined">
-                        <span class="time-rasp" v-html="callings[index.num]">
+        <div v-if="isTab('cabinet')">
+          <tab-selects>
+            <sche-date-input class="sm:w-1/2" v-model="selected.date"/>
+            <sche-button class="sm:w-1/2" @click="loadCabinets()" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }">Загрузить список кабинетов</sche-button>
+            <sche-button class="sm:w-1/2" v-if="state.cabinetsLoaded && state.cacheIncluded" @click="cleanCache()">Очистить кэш</sche-button>
+          </tab-selects>
 
-                        </span>
-                    </div>
-                    <div v-if="index.nameGroup != '' && index.nameGroup != undefined && index.nameGroup != null
-                        && activeTab != 'building' && index.isHeader == undefined" class="group-item time">
-                             <span class="time-rasp" v-html="index.nameGroup">
-                             </span>
-                         </div>
-                    <div class="group-item activity" v-if="index.isHeader == undefined">
-                        <div class="activity-rasp">
-                            <b>
-                                {{index.title}}
-                            </b>
-                            <br>
-                            <div>
-                                {{index.teachername}}
-                            </div>
-                             <div v-if="index.resource != ''">
-                                 <hr>
-                                 <div v-html="index.resource"></div>
-                             </div>
-                        </div>
-                    </div>
-                    <div class="group-item type-of-activity" v-if="index.isHeader == undefined">
-                        <div class="type-of-activity-rasp">
-                            <div>
-                                {{index.cab}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="group-item group-name" v-if="index.isHeader != undefined">
-                        <h1>{{index.name}}</h1>
-                    </div>
-                </div>
-            </div>
-             <div v-if="this.rasp.length == 0" class="alert__container">
-                 <div v-if="submite">
-                     <div class="alert alert__success spacer" role="alert">
-                         <p class="alert__text">Пар нет</p>
-                     </div>
-                 </div>
-                 <div v-if="!submite">
-                     <div class="alert alert__primary spacer" role="alert">
-                         <p class="alert__text">Вы ещё ничего не выбрали</p>
-                     </div>
-                 </div>
-             </div>
+          <tab-selects center="true" v-if="state.cabinetsLoading">
+            <loading-spinner/>
+          </tab-selects>
+
+          <tab-selects v-if="state.cabinetsLoaded">
+            <sche-select class="sm:w-1/2" v-model="selected.cabinet" :options="data.cabinets" label="name"/>
+            <sche-button class="sm:w-1/2" @click="load()"/>
+          </tab-selects>
+        </div>
+
+        <div v-if="this.rasp.length == 0" class="w-full overflow-x-auto mt-5">
+          <div v-bind:class="[submite ? 'success-alert' : 'info-alert']" role="alert">
+            <p v-if="!submite">Вы ещё ничего не выбрали</p>
+            <p v-else>Пар нет</p>
+          </div>
+        </div>
+
+        <div v-if="rasp.length > 0" class="w-full overflow-x-auto mt-5">
+          <schedule-view :rasp="this.rasp" :printGroupName="this.activeTab != 'building'"/>
         </div>
     </section>
     <section class="w-full opacity-40 mt-2">
         <div class="flex flex-col place-items-center">
           <h5 class="text-center leading-6">
-            SgkSchedule v2<br>
+            <button title="Окрыть настройки" @click="openSettings">SgkSchedule v2.1 (⚙️)</button><br>
             Разработано ГАПОУ "СГК"<br>
-            Доработано maksim789456
+            Доработано <a href="https://github.com/maksim789456">maksim789456</a>
           </h5>
-          <a class="" href="https://github.com/SgkSchedule/web_v2">
-            <img class="h-12 w-12" :src="require('../../public/github-logo.svg')">
+          <a href="https://github.com/SgkSchedule/web_v2">
+            <img class="h-12 w-12 dark:invert" :src="require('../../public/github-logo.svg')">
           </a>
         </div>
     </section>
@@ -137,15 +80,40 @@
 <script>
 import PresetValues from '../helpers/PresetValues'
 import ScheduleApi from '../helpers/ScheduleApi'
+import SettingsManager from '../helpers/SettingsManager'
+
+import tabItems from './tabs/TabItemsContainer.vue'
+import tabItem from './tabs/TabItem.vue'
+import tabSelects from './tabs/TabSelectsContainer.vue'
+
+import scheSelect from './inputs/ScheSelect.vue'
+import scheDateInput from './inputs/ScheDateInput.vue'
+import scheButton from './inputs/ScheButton.vue'
+
+import scheduleView from './schedule/ScheduleView.vue'
+import loadingSpinner from './LoadingSpinner.vue'
 
 export default {
+  components: {
+    tabItems,
+    tabItem,
+    tabSelects,
+
+    scheSelect,
+    scheDateInput,
+    scheButton,
+
+    scheduleView,
+    loadingSpinner
+  },
+  emits: ['openWarn', 'openSettings'],
   data () {
     return {
       tabs: ['group', 'user', 'building', 'cabinet'],
       activeTab: 'group',
       rasp: [],
       submite: false,
-      callings: PresetValues.callings,
+      settings: {},
       data: {
         groups: [],
         teachers: [],
@@ -178,23 +146,72 @@ export default {
       this.rasp = []
     },
     load () {
+      const api = new ScheduleApi()
       switch (this.activeTab) {
         case 'group': {
-          if (this.selected.group.id === -1) {
+          if (this.selected.group === null || this.selected.group === []) {
             return
           }
 
-          ScheduleApi.getScheduleByGroup(this.selected.group.id, this.selected.date)
+          if (this.settings.multipleSelection) {
+            this.rasp = []
+            const groupsLoadingPromises = []
+
+            this.selected.group.forEach(group => {
+              groupsLoadingPromises.push(
+                api.getScheduleByGroup(group.id, this.selected.date)
+                  .then(result => {
+                    if (result.lessons.length > 0) {
+                      if (this.selected.group.length > 1) {
+                        this.rasp.push({ name: group.name, isHeader: true })
+                      }
+                      result.lessons.forEach(data => this.rasp.push(data))
+                    }
+                  })
+              )
+            })
+
+            Promise.all(groupsLoadingPromises)
+              .then(this.submite = true)
+            break
+          }
+
+          api.getScheduleByGroup(this.selected.group.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
+            .then(() => this.submite = true)
           break
         }
         case 'user': {
-          if (this.selected.teacher.id === -1) {
+          if (this.selected.teacher === null || this.selected.teacher === []) {
             return
           }
 
-          ScheduleApi.getScheduleByUser(this.selected.teacher.id, this.selected.date)
+          if (this.settings.multipleSelection) {
+            this.rasp = []
+            const teacherLoadingPromises = []
+
+            this.selected.teacher.forEach(teacher => {
+              teacherLoadingPromises.push(
+                api.getScheduleByUser(teacher.id, this.selected.date)
+                  .then(result => {
+                    if (result.lessons.length > 0) {
+                      if (this.selected.teacher.length > 1) {
+                        this.rasp.push({ name: teacher.name, isHeader: true })
+                      }
+                      result.lessons.forEach(data => this.rasp.push(data))
+                    }
+                  })
+              )
+            })
+
+            Promise.all(teacherLoadingPromises)
+              .then(this.submite = true)
+            break
+          }
+
+          api.getScheduleByUser(this.selected.teacher.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
+            .then(() => this.submite = true)
           break
         }
         case 'building': {
@@ -210,18 +227,25 @@ export default {
             groups = groups.slice(Math.max(groups.length - 5, 1))
           }
           // Проходимся по всем групппах из корпуса
+          const groupsLoadingPromises = []
           groups.forEach(group => {
             // Получаем данные по группе
-            ScheduleApi.getScheduleByGroup(group, this.selected.date)
+            groupsLoadingPromises.push(api.getScheduleByGroup(group, this.selected.date)
               .then(result => {
-                // Сначала закидываем заголовок с названием группы
-                const fGroup = this.data.groups.find(x => x.id === group)
-                this.rasp.push({ name: fGroup.name, isHeader: true })
+                if (result.lessons.length > 0) {
+                  // Сначала закидываем заголовок с названием группы
+                  const fGroup = this.data.groups.find(x => x.id === group)
+                  this.rasp.push({ name: fGroup.name, isHeader: true })
 
-                // Потом уже данные по расписанию
-                result.lessons.forEach(data => this.rasp.push(data))
-              })
+                  // Потом уже данные по расписанию
+                  result.lessons.forEach(data => this.rasp.push(data))
+                }
+              }))
           })
+          Promise.all(groupsLoadingPromises)
+            .then(() => {
+              this.submite = true
+            })
           break
         }
         case 'cabinet': {
@@ -233,10 +257,10 @@ export default {
           this.rasp = cabinet.rasp.sort((a, b) => {
             return a.num - b.num
           })
+          this.submite = true
           break
         }
       }
-      this.submite = true
     },
     loadCabinets () {
       this.state.cabinetsLoading = true
@@ -245,6 +269,7 @@ export default {
 
       let rasp = []
       let loadingPromise
+      const api = new ScheduleApi()
 
       const cache = localStorage.getItem(`cache.${this.selected.date}`)
       if (cache === null) {
@@ -255,13 +280,8 @@ export default {
             groups = groups.slice(Math.max(groups.length - 5, 1))
           }
 
-          const groupsLoadingPromises = []
-          groups.forEach(group => {
-            if (group.id === -1) {
-              return
-            }
-
-            groupsLoadingPromises.push(ScheduleApi.getScheduleByGroup(group.id, this.selected.date)
+          const loadSchedule = (group) => {
+            return api.getScheduleByGroup(group.id, this.selected.date)
               .then(result => {
                 const fGroup = this.data.groups.find(x => x.id === group.id)
 
@@ -270,10 +290,22 @@ export default {
                   rasp.push(data)
                 })
               })
-            )
+          }
+
+          let chainPromise = null
+          groups.forEach(group => {
+            if (group.id === -1) {
+              return
+            }
+
+            if (chainPromise === null) {
+              chainPromise = loadSchedule(group)
+            } else {
+              chainPromise = chainPromise.then(() => loadSchedule(group))
+            }
           })
 
-          Promise.all(groupsLoadingPromises).then(() => {
+          chainPromise.then(() => {
             localStorage.setItem(`cache.${this.selected.date}`, JSON.stringify(rasp))
             this.state.cacheIncluded = true
             resolve()
@@ -315,62 +347,34 @@ export default {
         (rv[x[key]] = rv[x[key]] || []).push(x)
         return rv
       }, {})
+    },
+    openSettings () {
+      this.$emit('openSettings')
     }
   },
   created () {
-    const current = new Date() // 'Mar 11 2015' current.getTime() = 1426060964567
-    const followingDay = new Date(current.getTime() + 86400000) // + 1 day in ms
-    this.selected.date = followingDay.toISOString().split('T')[0]
+    this.settings = SettingsManager.getOrCreateSettings()
 
-    const requestOptions = {
-      method: 'GET'
+    const current = new Date()
+    if (this.settings.addDayToCurrentDate) {
+      current.setDate(current.getDate() + 1)
     }
+    this.selected.date = current.toISOString().split('T')[0]
 
-    fetch('https://mfc.samgk.ru/api/groups', requestOptions)
-      .then(response => {
-        if (response.status === 200) {
-          return response.json()
-        }
-        throw new Error('Groups api error')
-      })
+    const api = new ScheduleApi()
+
+    api.getGroups()
       .then(result => {
         this.data.groups = result
-        this.data.groups.unshift({ id: -1, name: 'Не выбрано' })
-        this.selected.group = this.data.groups[0]
       })
       .catch(error => {
         this.state.preloadFailed = true
         this.data.errors.push(error)
       })
-    fetch('https://asu.samgk.ru/api/teachers', requestOptions)
-      .then(response => {
-        if (response.status === 200) {
-          return response.json()
-        }
-        throw new Error('Teacher api error')
-      })
-      .then(result => {
-        this.data.teachers = result
-        // TODO: Move this and add enable/disable button
-        this.data.teachers = this.data.teachers.map(teacher => {
-          const splited = teacher.name.replace(/\s+/g, ' ').trim().split(' ')
-          if (splited.length === 2) {
-            const lastName = splited[0]
-            const firstNameChar = splited[1][0]
-            teacher.name = `${lastName} ${firstNameChar}.`
-          }
 
-          if (splited.length >= 3) {
-            const lastName = splited[0]
-            const firstNameChar = splited[1][0]
-            const middleNameChar = splited[2][0]
-            teacher.name = `${lastName} ${firstNameChar}. ${middleNameChar}.`
-          }
-
-          return teacher
-        })
-        this.data.teachers.unshift({ id: -1, name: 'Не выбрано' })
-        this.selected.teacher = this.data.teachers[0]
+    api.getTeachers()
+      .then(teachers => {
+        this.data.teachers = teachers
       })
       .catch(error => {
         this.state.preloadFailed = true

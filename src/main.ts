@@ -2,7 +2,6 @@ import { createApp, h } from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
 import './css/style.css'
-import './css/alerts.css'
 import 'flowbite'
 import 'vue-select/dist/vue-select.css'
 
