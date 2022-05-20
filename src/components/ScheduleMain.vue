@@ -10,7 +10,8 @@
 
         <div v-if="isTab('group')">
           <tab-selects>
-            <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" label="name"/>
+            <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" :multiple="settings.multipleSelection"
+              :placeholder="settings.multipleSelection ? 'Выберите группы' : 'Выберите группу'" label="name"/>
             <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
             <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
@@ -18,7 +19,8 @@
 
         <div v-if="isTab('user')">
           <tab-selects>
-            <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" label="name"/>
+            <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" :multiple="settings.multipleSelection"
+              :placeholder="settings.multipleSelection ? 'Выберите преподавателей' : 'Выберите преподавателя'" label="name"/>
             <sche-date-input class="sm:w-1/4" v-model="selected.date"/>
             <sche-button class="sm:w-1/4" @click="load()"/>
           </tab-selects>
@@ -63,7 +65,7 @@
     <section class="w-full opacity-40 mt-2">
         <div class="flex flex-col place-items-center">
           <h5 class="text-center leading-6">
-            <button title="Окрыть настройки" @click="openSettings">SgkSchedule v2 (⚙️)</button><br>
+            <button title="Окрыть настройки" @click="openSettings">SgkSchedule v2.1 (⚙️)</button><br>
             Разработано ГАПОУ "СГК"<br>
             Доработано <a href="https://github.com/maksim789456">maksim789456</a>
           </h5>
@@ -147,8 +149,31 @@ export default {
       const api = new ScheduleApi()
       switch (this.activeTab) {
         case 'group': {
-          if (this.selected.group.id === -1) {
+          if (this.selected.group === null || this.selected.group === []) {
             return
+          }
+
+          if (this.settings.multipleSelection) {
+            this.rasp = []
+            const groupsLoadingPromises = []
+
+            this.selected.group.forEach(group => {
+              groupsLoadingPromises.push(
+                api.getScheduleByGroup(group.id, this.selected.date)
+                  .then(result => {
+                    if (result.lessons.length > 0) {
+                      if (this.selected.group.length > 1) {
+                        this.rasp.push({ name: group.name, isHeader: true })
+                      }
+                      result.lessons.forEach(data => this.rasp.push(data))
+                    }
+                  })
+              )
+            })
+
+            Promise.all(groupsLoadingPromises)
+              .then(this.submite = true)
+            break
           }
 
           api.getScheduleByGroup(this.selected.group.id, this.selected.date)
@@ -157,8 +182,31 @@ export default {
           break
         }
         case 'user': {
-          if (this.selected.teacher.id === -1) {
+          if (this.selected.teacher === null || this.selected.teacher === []) {
             return
+          }
+
+          if (this.settings.multipleSelection) {
+            this.rasp = []
+            const teacherLoadingPromises = []
+
+            this.selected.teacher.forEach(teacher => {
+              teacherLoadingPromises.push(
+                api.getScheduleByUser(teacher.id, this.selected.date)
+                  .then(result => {
+                    if (result.lessons.length > 0) {
+                      if (this.selected.teacher.length > 1) {
+                        this.rasp.push({ name: teacher.name, isHeader: true })
+                      }
+                      result.lessons.forEach(data => this.rasp.push(data))
+                    }
+                  })
+              )
+            })
+
+            Promise.all(teacherLoadingPromises)
+              .then(this.submite = true)
+            break
           }
 
           api.getScheduleByUser(this.selected.teacher.id, this.selected.date)
@@ -316,8 +364,6 @@ export default {
     api.getGroups()
       .then(result => {
         this.data.groups = result
-        this.data.groups.unshift({ id: -1, name: 'Не выбрано' })
-        this.selected.group = this.data.groups[0]
       })
       .catch(error => {
         this.state.preloadFailed = true
@@ -327,8 +373,6 @@ export default {
     api.getTeachers()
       .then(teachers => {
         this.data.teachers = teachers
-        this.data.teachers.unshift({ id: -1, name: 'Не выбрано' })
-        this.selected.teacher = this.data.teachers[0]
       })
       .catch(error => {
         this.state.preloadFailed = true
