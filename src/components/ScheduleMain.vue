@@ -144,13 +144,14 @@ export default {
       this.rasp = []
     },
     load () {
+      const api = new ScheduleApi()
       switch (this.activeTab) {
         case 'group': {
           if (this.selected.group.id === -1) {
             return
           }
 
-          ScheduleApi.getScheduleByGroup(this.selected.group.id, this.selected.date)
+          api.getScheduleByGroup(this.selected.group.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
             .then(() => this.submite = true)
           break
@@ -160,7 +161,7 @@ export default {
             return
           }
 
-          ScheduleApi.getScheduleByUser(this.selected.teacher.id, this.selected.date)
+          api.getScheduleByUser(this.selected.teacher.id, this.selected.date)
             .then(result => this.rasp = result.lessons)
             .then(() => this.submite = true)
           break
@@ -181,7 +182,7 @@ export default {
           const groupsLoadingPromises = []
           groups.forEach(group => {
             // Получаем данные по группе
-            groupsLoadingPromises.push(ScheduleApi.getScheduleByGroup(group, this.selected.date)
+            groupsLoadingPromises.push(api.getScheduleByGroup(group, this.selected.date)
               .then(result => {
                 if (result.lessons.length > 0) {
                   // Сначала закидываем заголовок с названием группы
@@ -220,6 +221,7 @@ export default {
 
       let rasp = []
       let loadingPromise
+      const api = new ScheduleApi()
 
       const cache = localStorage.getItem(`cache.${this.selected.date}`)
       if (cache === null) {
@@ -236,7 +238,7 @@ export default {
               return
             }
 
-            groupsLoadingPromises.push(ScheduleApi.getScheduleByGroup(group.id, this.selected.date)
+            groupsLoadingPromises.push(api.getScheduleByGroup(group.id, this.selected.date)
               .then(result => {
                 const fGroup = this.data.groups.find(x => x.id === group.id)
 
@@ -302,17 +304,9 @@ export default {
     const followingDay = new Date(current.getTime() + 86400000) // + 1 day in ms
     this.selected.date = followingDay.toISOString().split('T')[0]
 
-    const requestOptions = {
-      method: 'GET'
-    }
+    const api = new ScheduleApi()
 
-    fetch('https://mfc.samgk.ru/api/groups', requestOptions)
-      .then(response => {
-        if (response.status === 200) {
-          return response.json()
-        }
-        throw new Error('Groups api error')
-      })
+    api.getGroups()
       .then(result => {
         this.data.groups = result
         this.data.groups.unshift({ id: -1, name: 'Не выбрано' })
@@ -322,38 +316,8 @@ export default {
         this.state.preloadFailed = true
         this.data.errors.push(error)
       })
-    fetch('https://asu.samgk.ru/api/teachers', requestOptions)
-      .then(response => {
-        if (response.status === 200) {
-          return response.json()
-        }
-        throw new Error('Teacher api error')
-      })
-      .then(result => {
-        return new Promise(resolve => {
-          if (this.settings.abbreviation === true) {
-            resolve(result.map(teacher => {
-              const splited = teacher.name.replace(/\s+/g, ' ').trim().split(' ')
-              if (splited.length === 2) {
-                const lastName = splited[0]
-                const firstNameChar = splited[1][0]
-                teacher.name = `${lastName} ${firstNameChar}.`
-              }
 
-              if (splited.length >= 3) {
-                const lastName = splited[0]
-                const firstNameChar = splited[1][0]
-                const middleNameChar = splited[2][0]
-                teacher.name = `${lastName} ${firstNameChar}. ${middleNameChar}.`
-              }
-
-              return teacher
-            }))
-          } else {
-            resolve(result)
-          }
-        })
-      })
+    api.getTeachers()
       .then(teachers => {
         this.data.teachers = teachers
         this.data.teachers.unshift({ id: -1, name: 'Не выбрано' })
