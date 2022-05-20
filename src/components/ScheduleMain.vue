@@ -41,8 +41,9 @@
             <sche-button class="sm:w-1/2" v-if="state.cabinetsLoaded && state.cacheIncluded" @click="cleanCache()">Очистить кэш</sche-button>
           </tab-selects>
 
-          <tab-selects center="true" v-if="state.cabinetsLoading">
+          <tab-selects class="flex-col items-center" center="true" v-if="state.cabinetsLoading">
             <loading-spinner/>
+            <p class="mt-2 mr-1 text-base">{{state.countOfCabinetsLoaded}} / {{state.countOfCabinetsRemaining}}</p>
           </tab-selects>
 
           <tab-selects v-if="state.cabinetsLoaded">
@@ -132,7 +133,9 @@ export default {
         cabinetsLoading: false,
         cabinetsLoaded: false,
         cacheIncluded: false,
-        preloadFailed: false
+        preloadFailed: false,
+        countOfCabinetsLoaded: 0,
+        countOfCabinetsRemaining: 0
       }
     }
   },
@@ -280,7 +283,10 @@ export default {
             groups = groups.slice(Math.max(groups.length - 5, 1))
           }
 
+          this.state.countOfCabinetsRemaining = groups.length + 1
+
           const loadSchedule = (group) => {
+            this.state.countOfCabinetsLoaded += 1
             return api.getScheduleByGroup(group.id, this.selected.date)
               .then(result => {
                 const fGroup = this.data.groups.find(x => x.id === group.id)
@@ -325,7 +331,7 @@ export default {
           const rawCabinets = this.groupBy(rasp, 'cab')
           for (const key of Object.keys(rawCabinets)) {
             const rasp = rawCabinets[key]
-            this.data.cabinets.push({ id: id, name: key, rasp: rasp })
+            this.data.cabinets.push({ id, name: key, rasp })
             id++
           }
           this.selected.cabinet = this.data.cabinets[0]
