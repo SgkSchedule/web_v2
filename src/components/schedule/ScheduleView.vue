@@ -22,7 +22,7 @@
         </div>
       </row-item>
       <row-item v-if="item.isHeader == undefined">
-          <div>
+          <div class="text-center">
             {{item.cab}}
           </div>
       </row-item>

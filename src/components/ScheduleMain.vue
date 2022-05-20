@@ -1,5 +1,5 @@
 <template>
-<div class="min-h-screen max-w-4xl m-auto w-full">
+<div class="max-w-4xl m-auto w-full">
     <section id="rasp" class="bg-white dark:bg-gray-800 shadow-lg rounded-md max-w-4xl min-h-min p-5">
         <tab-items>
             <tab-item :tabActive="isTab('group')" @click="setTab('group')">По учебной группе</tab-item>
