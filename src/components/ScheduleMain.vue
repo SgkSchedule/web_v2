@@ -368,25 +368,25 @@ export default {
 
     const api = new ScheduleApi()
 
-    // api.getGroups()
-    //   .then(result => {
-    //     this.data.groups = result
-    //   })
-    //   .catch(error => {
-    //     this.state.preloadFailed = true
-    //     this.data.errors.push(error)
-    //   })
+    api.getGroups()
+      .then(result => {
+        this.data.groups = result
+      })
+      .catch(error => {
+        this.state.preloadFailed = true
+        this.data.errors.push(error)
+      })
 
-    // api.getTeachers()
-    //   .then(teachers => {
-    //     this.data.teachers = teachers
-    //   })
-    //   .catch(error => {
-    //     this.state.preloadFailed = true
-    //     this.data.errors.push(error)
-    //   })
+    api.getTeachers()
+      .then(teachers => {
+        this.data.teachers = teachers
+      })
+      .catch(error => {
+        this.state.preloadFailed = true
+        this.data.errors.push(error)
+      })
 
-    // this.selected.building = this.data.buildings[0]
+    this.selected.building = this.data.buildings[0]
 
     if (this.state.preloadFailed) {
       this.$emit('openWarn', this.data.errors)
