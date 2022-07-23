@@ -12,25 +12,25 @@ export default class ScheduleApi {
   }
 
   async getScheduleByGroup (groupId: number, date: string) {
-    return await axios.get(`https://asu.samgk.ru/api/schedule/${groupId}/${date}`)
+    return await axios.get(`https://sgk-schedule-api.vercel.app/api/schedule/${groupId}/${date}`)
       .then(this.handleResponse)
       .catch(this.handleError)
   }
 
   async getScheduleByUser (userId: number, date: string) {
-    return await axios.get(`https://asu.samgk.ru/api/schedule/teacher/${date}/${userId}`)
+    return await axios.get(`https://sgk-schedule-api.vercel.app/api/schedule/teacher/${date}/${userId}`)
       .then(this.handleResponse)
       .catch(this.handleError)
   }
 
   async getGroups () {
-    return await axios.get('https://mfc.samgk.ru/api/groups')
+    return await axios.get('https://sgk-schedule-api.vercel.app/api/groups')
       .then(this.handleResponse)
       .catch(this.handleError)
   }
 
   async getTeachers () {
-    return await axios.get('https://asu.samgk.ru/api/teachers')
+    return await axios.get('https://sgk-schedule-api.vercel.app/api/teachers')
       .then(this.handleResponse)
       .then((teachers: NamedEntity[]) =>
         this.settings.abbreviation ? teachers.map(NameReducer.reduce) : teachers)
