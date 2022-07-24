@@ -42,7 +42,7 @@ export default class ScheduleApi {
       console.log(response)
     }
 
-    return response.data
+    return response.data.data
   }
 
   private handleError (error: AxiosError) {
