@@ -6,7 +6,7 @@ import 'flowbite'
 import 'vue-select/dist/vue-select.css'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-import { VueSelect as vSelect } from 'vue-select'
+import vSelect from 'vue-select'
 
 const app = createApp({
   render: () => h(App)
