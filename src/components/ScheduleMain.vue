@@ -36,19 +36,10 @@
 
         <div v-if="isTab('cabinet')">
           <tab-selects>
-            <sche-date-input class="sm:w-1/2" v-model="selected.date"/>
-            <sche-button class="sm:w-1/2" @click="loadCabinets()" v-bind:class="{ 'sm:mr-4': state.cacheIncluded }">Загрузить список кабинетов</sche-button>
-            <sche-button class="sm:w-1/2" v-if="state.cabinetsLoaded && state.cacheIncluded" @click="cleanCache()">Очистить кэш</sche-button>
-          </tab-selects>
-
-          <tab-selects class="flex-col items-center" center="true" v-if="state.cabinetsLoading">
-            <loading-spinner/>
-            <p class="mt-2 mr-1 text-base">{{state.countOfCabinetsLoaded}} / {{state.countOfCabinetsRemaining}}</p>
-          </tab-selects>
-
-          <tab-selects v-if="state.cabinetsLoaded">
-            <sche-select class="sm:w-1/2" v-model="selected.cabinet" :options="data.cabinets" label="name"/>
-            <sche-button class="sm:w-1/2" @click="load()"/>
+            <sche-select class="sm:w-1/3" v-model="selected.cabinet" :options="data.cabinets" :multiple="settings.multipleSelection"
+              :placeholder="settings.multipleSelection ? 'Выберите кабинеты' : 'Выберите кабинет'" label="name"/>
+            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
         </div>
 
@@ -91,7 +82,6 @@ import scheDateInput from './inputs/ScheDateInput.vue'
 import scheButton from './inputs/ScheButton.vue'
 
 import scheduleView from './schedule/ScheduleView.vue'
-import loadingSpinner from './LoadingSpinner.vue'
 
 export default {
   components: {
@@ -103,8 +93,7 @@ export default {
     scheDateInput,
     scheButton,
 
-    scheduleView,
-    loadingSpinner
+    scheduleView
   },
   emits: ['openWarn', 'openSettings'],
   data () {
@@ -129,12 +118,8 @@ export default {
         date: new Date().toISOString().split('T')[0]
       },
       state: {
-        cabinetsLoading: false,
-        cabinetsLoaded: false,
         cacheIncluded: false,
-        preloadFailed: false,
-        countOfCabinetsLoaded: 0,
-        countOfCabinetsRemaining: 0
+        preloadFailed: false
       }
     }
   },
@@ -251,101 +236,38 @@ export default {
           break
         }
         case 'cabinet': {
-          if (typeof this.selected.cabinet === 'undefined' || this.selected.cabinet === null) {
+          if (this.selected.cabinet === null || this.selected.cabinet === []) {
             return
           }
 
-          const cabinet = this.data.cabinets.find(x => x.id === this.selected.cabinet.id)
-          this.rasp = cabinet.rasp.sort((a, b) => {
-            return a.num - b.num
-          })
-          this.submite = true
-          break
+          if (this.settings.multipleSelection) {
+            this.rasp = []
+            const cabinetLoadingPromises = []
+
+            this.selected.cabinet.forEach(cabinet => {
+              cabinetLoadingPromises.push(
+                api.getScheduleByCabinet(cabinet.id, this.selected.date)
+                  .then(result => {
+                    if (result.lessons.length > 0) {
+                      if (this.selected.cabinet.length > 1) {
+                        this.rasp.push({ name: cabinet.name, isHeader: true })
+                      }
+                      result.lessons.forEach(data => this.rasp.push(data))
+                    }
+                  })
+              )
+            })
+
+            Promise.all(cabinetLoadingPromises)
+              .then(this.submite = true)
+            break
+          }
+
+          api.getScheduleByCabinet(this.selected.cabinet.id, this.selected.date)
+            .then(result => this.rasp = result.lessons)
+            .then(() => this.submite = true)
         }
       }
-    },
-    loadCabinets () {
-      this.state.cabinetsLoading = true
-      this.state.cabinetsLoaded = false
-      this.state.cacheIncluded = false
-
-      let rasp = []
-      let loadingPromise
-      const api = new ScheduleApi()
-
-      const cache = localStorage.getItem(`cache.${this.selected.date}`)
-      if (cache === null) {
-        loadingPromise = new Promise((resolve) => {
-          let groups = this.data.groups
-          if (process.env.NODE_ENV === 'development') {
-            console.warn('Dev mode enabled! To request used only last 5 groups!')
-            groups = groups.slice(Math.max(groups.length - 5, 1))
-          }
-
-          this.state.countOfCabinetsRemaining = groups.length + 1
-
-          const loadSchedule = (group) => {
-            this.state.countOfCabinetsLoaded += 1
-            return api.getScheduleByGroup(group.id, this.selected.date)
-              .then(result => {
-                const fGroup = this.data.groups.find(x => x.id === group.id)
-
-                result.lessons.forEach(data => {
-                  data.nameGroup = fGroup.name
-                  rasp.push(data)
-                })
-              })
-          }
-
-          let chainPromise = null
-          groups.forEach(group => {
-            if (group.id === -1) {
-              return
-            }
-
-            if (chainPromise === null) {
-              chainPromise = loadSchedule(group)
-            } else {
-              chainPromise = chainPromise.then(() => loadSchedule(group))
-            }
-          })
-
-          chainPromise.then(() => {
-            localStorage.setItem(`cache.${this.selected.date}`, JSON.stringify(rasp))
-            this.state.cacheIncluded = true
-            resolve()
-          })
-        })
-      } else {
-        loadingPromise = new Promise((resolve) => {
-          rasp = JSON.parse(cache)
-          resolve()
-        })
-      }
-
-      loadingPromise
-        .then(() => {
-          this.data.cabinets = []
-          let id = 0
-          const rawCabinets = this.groupBy(rasp, 'cab')
-          for (const key of Object.keys(rawCabinets)) {
-            const rasp = rawCabinets[key]
-            this.data.cabinets.push({ id, name: key, rasp })
-            id++
-          }
-          this.selected.cabinet = this.data.cabinets[0]
-        })
-        .then(() => {
-          this.state.cabinetsLoading = false
-          this.state.cabinetsLoaded = true
-          if (cache !== null) {
-            this.state.cacheIncluded = true
-          }
-        })
-    },
-    cleanCache () {
-      localStorage.removeItem(`cache.${this.selected.date}`)
-      this.state.cacheIncluded = false
     },
     groupBy (xs, key) {
       return xs.reduce((rv, x) => {
@@ -380,6 +302,18 @@ export default {
     api.getTeachers()
       .then(teachers => {
         this.data.teachers = teachers
+      })
+      .catch(error => {
+        this.state.preloadFailed = true
+        this.data.errors.push(error)
+      })
+
+    api.getCabinets()
+      .then(cabinets => {
+        this.data.cabinets = Object.keys(cabinets).map(key => ({
+          id: key,
+          name: cabinets[key]
+        }))
       })
       .catch(error => {
         this.state.preloadFailed = true

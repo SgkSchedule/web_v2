@@ -6,10 +6,13 @@ import NameReducer from './NameReducer'
 
 const groupsRoute = () => 'https://mfc.samgk.ru/api/groups'
 const teachersRoute = () => 'https://asu.samgk.ru/api/teachers'
+const cabinetsRoute = () => 'https://asu.samgk.ru/api/cabs'
 const scheduleByGroupRoute = (groupId: number, date: string) =>
   `https://asu.samgk.ru/api/schedule/${groupId}/${date}`
 const scheduleByUserRoute = (userId: number, date: string) =>
   `https://asu.samgk.ru/api/schedule/teacher/${date}/${userId}`
+const scheduleByCabinetRoute = (cabName: string, date: string) =>
+  `https://asu.samgk.ru//api/schedule/cabs/${date}/cabNum/${cabName}`
 
 export default class ScheduleApi {
   private settings: Settings
@@ -30,6 +33,12 @@ export default class ScheduleApi {
       .catch(this.handleError)
   }
 
+  async getScheduleByCabinet (cabName: string, date: string) {
+    return await axios.get(scheduleByCabinetRoute(cabName, date))
+      .then(this.handleResponse)
+      .catch(this.handleError)
+  }
+
   async getGroups () {
     return await axios.get(groupsRoute())
       .then(this.handleResponse)
@@ -41,6 +50,12 @@ export default class ScheduleApi {
       .then(this.handleResponse)
       .then((teachers: NamedEntity[]) =>
         this.settings.abbreviation ? teachers.map(NameReducer.reduce) : teachers)
+      .catch(this.handleError)
+  }
+
+  async getCabinets () {
+    return await axios.get(cabinetsRoute())
+      .then(this.handleResponse)
       .catch(this.handleError)
   }
 
