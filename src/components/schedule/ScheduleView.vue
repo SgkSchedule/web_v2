@@ -15,10 +15,6 @@
         <div>
           <b>{{item.title}}</b><br>
           <div>{{item.teachername}}</div>
-          <div v-if="item.resource != ''">
-            <hr>
-            <div v-html="item.resource"></div>
-          </div>
         </div>
       </row-item>
       <row-item class="!basis-[10%]" v-if="item.isHeader == undefined">
