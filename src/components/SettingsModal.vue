@@ -45,7 +45,7 @@
                 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
             </div>
             <label for="multipleSelection" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-50">
-              Мультивыбор групп и преподавателей
+              Мульти-выбор элементов в селекторах
             </label>
           </div>
           <div class="flex items-start mb-3">

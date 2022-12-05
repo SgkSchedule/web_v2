@@ -4,12 +4,12 @@
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Сайт времено недоступен
+                    Сайт временно недоступен
                 </h3>
             </div>
             <div class="p-6 text-center">
                 <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400 pb-3">
-                  По техническим причинам сайт времено не доступен!<br>
+                  По техническим причинам сайт временно не доступен!<br>
                 </p>
                 <div class="opacity-40" v-for="(error) in this.errors" :key="error">
                   <p>{{error}}</p>

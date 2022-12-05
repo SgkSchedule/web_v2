@@ -20,7 +20,7 @@ export default {
   components: { ScheduleMain, WarningScreen, SettingsModal },
   data () {
     return {
-      openWarn: false,
+      openWarn: true,
       openSettings: false,
       errors: []
     }
