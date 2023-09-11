@@ -10,35 +10,37 @@
 
         <div v-if="isTab('group')">
           <tab-selects>
-            <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" :multiple="settings.multipleSelection"
+            <sche-select class="sm:w-1/3 sm:mr-4" v-model="selected.group" :options="data.groups" :multiple="settings.multipleSelection"
               :placeholder="settings.multipleSelection ? 'Выберите группы' : 'Выберите группу'" label="name"/>
-            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-date-input class="sm:w-1/3 sm:mr-4" v-model="selected.date"/>
             <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
         </div>
 
         <div v-if="isTab('user')">
           <tab-selects>
-            <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" :multiple="settings.multipleSelection"
+            <sche-select class="sm:w-1/2 sm:mr-2.5" v-model="selected.teacher" :options="data.teachers" :multiple="settings.multipleSelection"
               :placeholder="settings.multipleSelection ? 'Выберите преподавателей' : 'Выберите преподавателя'" label="name"/>
-            <sche-date-input class="sm:w-1/4" v-model="selected.date"/>
-            <sche-button class="sm:w-1/4" @click="load()"/>
+            <div class="flex w-full flex-wrap sm:flex-nowrap sm:w-1/2">
+              <sche-date-input class="sm:mr-2.5" v-model="selected.date"/>
+              <sche-button class="sm:mr-0" @click="load()"/>
+            </div>
           </tab-selects>
         </div>
 
         <div v-if="isTab('building')">
           <tab-selects>
-            <sche-select class="sm:w-1/3" v-model="selected.building" :options="data.buildings" label="name"/>
-            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-select class="sm:w-1/3 sm:mr-4" v-model="selected.building" :options="data.buildings" label="name"/>
+            <sche-date-input class="sm:w-1/3 sm:mr-4" v-model="selected.date"/>
             <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
         </div>
 
         <div v-if="isTab('cabinet')">
           <tab-selects>
-            <sche-select class="sm:w-1/3" v-model="selected.cabinet" :options="data.cabinets" :multiple="settings.multipleSelection"
+            <sche-select class="sm:w-1/3 sm:mr-4" v-model="selected.cabinet" :options="data.cabinets" :multiple="settings.multipleSelection"
               :placeholder="settings.multipleSelection ? 'Выберите кабинеты' : 'Выберите кабинет'" label="name"/>
-            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-date-input class="sm:w-1/3 sm:mr-4" v-model="selected.date"/>
             <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
         </div>
