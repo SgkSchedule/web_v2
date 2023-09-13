@@ -8,7 +8,7 @@
         <span v-html="callings[item.num]"></span>
       </row-item>
       <row-item v-if="item.nameGroup != '' && item.nameGroup != undefined && item.nameGroup != null
-        && printGroupName && item.isHeader == undefined" class="col-span-2 text-center">
+        && activeTab !== 'building' && item.isHeader == undefined" class="col-span-2 text-center">
           <span v-html="item.nameGroup"></span>
       </row-item>
       <row-item class="!justify-start" v-if="item.isHeader == undefined" v-bind:class="[activeTab == 'user' ? 'col-span-5' : ['col-span-5', 'sm:col-span-7']]">
@@ -46,9 +46,6 @@ export default {
   functions: {
     isHeader (item) {
       return item.isHeader !== undefined
-    },
-    printGroupName () {
-      return this.activeTab !== 'building'
     }
   }
 }
