@@ -10,35 +10,37 @@
 
         <div v-if="isTab('group')">
           <tab-selects>
-            <sche-select class="sm:w-1/3" v-model="selected.group" :options="data.groups" :multiple="settings.multipleSelection"
+            <sche-select class="sm:w-1/3 sm:mr-4" v-model="selected.group" :options="data.groups" :multiple="settings.multipleSelection"
               :placeholder="settings.multipleSelection ? 'Выберите группы' : 'Выберите группу'" label="name"/>
-            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-date-input class="sm:w-1/3 sm:mr-4" v-model="selected.date"/>
             <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
         </div>
 
         <div v-if="isTab('user')">
           <tab-selects>
-            <sche-select class="sm:w-1/2" v-model="selected.teacher" :options="data.teachers" :multiple="settings.multipleSelection"
+            <sche-select class="sm:w-1/2 sm:mr-2.5" v-model="selected.teacher" :options="data.teachers" :multiple="settings.multipleSelection"
               :placeholder="settings.multipleSelection ? 'Выберите преподавателей' : 'Выберите преподавателя'" label="name"/>
-            <sche-date-input class="sm:w-1/4" v-model="selected.date"/>
-            <sche-button class="sm:w-1/4" @click="load()"/>
+            <div class="flex w-full flex-wrap sm:flex-nowrap sm:w-1/2">
+              <sche-date-input class="sm:mr-2.5" v-model="selected.date"/>
+              <sche-button class="sm:mr-0" @click="load()"/>
+            </div>
           </tab-selects>
         </div>
 
         <div v-if="isTab('building')">
           <tab-selects>
-            <sche-select class="sm:w-1/3" v-model="selected.building" :options="data.buildings" label="name"/>
-            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-select class="sm:w-1/3 sm:mr-4" v-model="selected.building" :options="data.buildings" label="name"/>
+            <sche-date-input class="sm:w-1/3 sm:mr-4" v-model="selected.date"/>
             <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
         </div>
 
         <div v-if="isTab('cabinet')">
           <tab-selects>
-            <sche-select class="sm:w-1/3" v-model="selected.cabinet" :options="data.cabinets" :multiple="settings.multipleSelection"
+            <sche-select class="sm:w-1/3 sm:mr-4" v-model="selected.cabinet" :options="data.cabinets" :multiple="settings.multipleSelection"
               :placeholder="settings.multipleSelection ? 'Выберите кабинеты' : 'Выберите кабинет'" label="name"/>
-            <sche-date-input class="sm:w-1/3" v-model="selected.date"/>
+            <sche-date-input class="sm:w-1/3 sm:mr-4" v-model="selected.date"/>
             <sche-button class="sm:w-1/3" @click="load()"/>
           </tab-selects>
         </div>
@@ -51,14 +53,14 @@
         </div>
 
         <div v-if="rasp.length > 0" class="w-full overflow-x-auto mt-5">
-          <schedule-view :rasp="this.rasp" :printGroupName="this.activeTab != 'building'"/>
+          <schedule-view :rasp="this.rasp" :activeTab="this.activeTab"/>
         </div>
     </section>
     <section class="w-full opacity-40 mt-2">
         <div class="flex flex-col place-items-center">
           <h5 class="text-center leading-6">
-            <button title="Окрыть настройки" @click="openSettings">SgkSchedule v2.1 (⚙️)</button><br>
-            Copyright © 2022 <a href="https://github.com/maksim789456">maksim789456</a>, <a href="https://samgk.ru/">ГАПОУ "СГК"</a>
+            <button title="Открыть настройки" @click="openSettings">SgkSchedule v2.1.2 (⚙️)</button><br>
+            Copyright © 2022-2023 <a href="https://github.com/maksim789456">maksim789456</a>, <a href="https://samgk.ru/">ГАПОУ "СГК"</a>
           </h5>
           <a href="https://github.com/SgkSchedule/web_v2">
             <img class="h-12 w-12 dark:invert" :src="require('../../public/github-logo.svg')">
@@ -213,7 +215,7 @@ export default {
             console.warn('Dev mode enabled! To request used only last 5 groups!')
             groups = groups.slice(Math.max(groups.length - 5, 1))
           }
-          // Проходимся по всем групппах из корпуса
+          // Проходимся по всем группах из корпуса
           const groupsLoadingPromises = []
           groups.forEach(group => {
             // Получаем данные по группе

@@ -1,6 +1,6 @@
 <template>
   <v-select class="rounded border border-black/10 dark:border-gray-50
-    w-full sm:mr-4 px-3 pb-1.5 pt-2 mb-1.5 sm:mb-0
+    w-full px-3 pb-1.5 pt-2 mb-1.5 sm:mb-0
     bg-select-background dark:bg-transparent"
     v-bind:class="[darkMode ? 'v-select-dark' : 'v-select-light']"
     :clearable="false" :multiple="multiple" v-bind="$attrs">
