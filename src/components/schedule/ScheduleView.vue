@@ -1,28 +1,28 @@
 <template>
-  <div>
-    <div v-for="(item) in this.rasp" :key="item.id" class="flex w-full mb-1.5">
-      <row-item v-if="item.isHeader == undefined">
+  <div class='grid w-full gap-1.5' v-bind:class="'gap-rows-' + this.rasp.length">
+    <div v-for="(item) in this.rasp" :key="item.id" class="grid w-full gap-x-2 sm:gap-x-1.5 grid-cols-10">
+      <row-item class="sm:col-span-1" v-bind:class="[activeTab == 'user' ? 'col-span-1' : 'col-span-2']" v-if="item.isHeader == undefined">
         <span>{{item.num}}</span>
       </row-item>
-      <row-item class="!basis-[10%]" v-if="item.isHeader == undefined">
+      <row-item class="sm:col-span-1" v-bind:class="[activeTab == 'user' ? 'col-span-1' : 'col-span-2']" v-if="item.isHeader == undefined">
         <span v-html="callings[item.num]"></span>
       </row-item>
       <row-item v-if="item.nameGroup != '' && item.nameGroup != undefined && item.nameGroup != null
-        && printGroupName && item.isHeader == undefined" class="!basis-2/12">
+        && printGroupName && item.isHeader == undefined" class="col-span-2 text-center">
           <span v-html="item.nameGroup"></span>
       </row-item>
-      <row-item class="!basis-7/12 !justify-start" v-if="item.isHeader == undefined">
+      <row-item class="!justify-start" v-if="item.isHeader == undefined" v-bind:class="[activeTab == 'user' ? 'col-span-5' : ['col-span-5', 'sm:col-span-7']]">
         <div>
-          <b>{{item.title}}</b><br>
+          <div class="font-bold">{{item.title}}</div>
           <div>{{item.teachername}}</div>
         </div>
       </row-item>
-      <row-item class="!basis-[10%]" v-if="item.isHeader == undefined">
+      <row-item v-if="item.isHeader == undefined">
           <div class="text-center">
             {{item.cab}}
           </div>
       </row-item>
-      <row-item v-if="item.isHeader != undefined" isGroupHeader="true">
+      <row-item v-if="item.isHeader != undefined" isGroupHeader="true" class="col-span-10">
           <h1>{{item.name}}</h1>
       </row-item>
     </div>
@@ -34,7 +34,7 @@ import PresetValues from '../../helpers/PresetValues'
 import rowItem from './RowItem.vue'
 
 export default {
-  props: ['rasp', 'printGroupName'],
+  props: ['rasp', 'activeTab'],
   components: {
     rowItem
   },
@@ -46,6 +46,9 @@ export default {
   functions: {
     isHeader (item) {
       return item.isHeader !== undefined
+    },
+    printGroupName () {
+      return this.activeTab !== 'building'
     }
   }
 }

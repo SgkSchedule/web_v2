@@ -53,14 +53,14 @@
         </div>
 
         <div v-if="rasp.length > 0" class="w-full overflow-x-auto mt-5">
-          <schedule-view :rasp="this.rasp" :printGroupName="this.activeTab != 'building'"/>
+          <schedule-view :rasp="this.rasp" :activeTab="this.activeTab"/>
         </div>
     </section>
     <section class="w-full opacity-40 mt-2">
         <div class="flex flex-col place-items-center">
           <h5 class="text-center leading-6">
-            <button title="Окрыть настройки" @click="openSettings">SgkSchedule v2.1 (⚙️)</button><br>
-            Copyright © 2022 <a href="https://github.com/maksim789456">maksim789456</a>, <a href="https://samgk.ru/">ГАПОУ "СГК"</a>
+            <button title="Открыть настройки" @click="openSettings">SgkSchedule v2.1.2 (⚙️)</button><br>
+            Copyright © 2022-2023 <a href="https://github.com/maksim789456">maksim789456</a>, <a href="https://samgk.ru/">ГАПОУ "СГК"</a>
           </h5>
           <a href="https://github.com/SgkSchedule/web_v2">
             <img class="h-12 w-12 dark:invert" :src="require('../../public/github-logo.svg')">
@@ -215,7 +215,7 @@ export default {
             console.warn('Dev mode enabled! To request used only last 5 groups!')
             groups = groups.slice(Math.max(groups.length - 5, 1))
           }
-          // Проходимся по всем групппах из корпуса
+          // Проходимся по всем группах из корпуса
           const groupsLoadingPromises = []
           groups.forEach(group => {
             // Получаем данные по группе
