@@ -117,7 +117,7 @@ export default {
         group: null,
         building: null,
         cabinet: null,
-        date: new Date().toISOString().split('T')[0]
+        date: null
       },
       state: {
         cacheIncluded: false,
@@ -288,7 +288,12 @@ export default {
     if (this.settings.addDayToCurrentDate) {
       current.setDate(current.getDate() + 1)
     }
-    this.selected.date = current.toISOString().split('T')[0]
+
+    // Make date string with format 202*-**-**
+    let mouth = current.getMonth() + 1
+    mouth = mouth < 10 ? '0' + mouth : mouth
+    this.selected.date = `${current.getFullYear()}-${mouth}-${current.getDate()}`
+    console.log('Selected date: ' + this.selected.date)
 
     const api = new ScheduleApi()
 
